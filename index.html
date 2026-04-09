@@ -1,492 +1,432 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StaticsMaster | Professional Engineering Suite</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        /* ═══ GLOBAL RESET & THEME ═══ */
-        :root {
-            --bg: #0b0f1a;
-            --panel: #111827;
-            --card: #1f2937;
-            --card-hover: #374151;
-            --border: rgba(255, 255, 255, 0.08);
-            --accent-primary: #7c3aed;
-            --accent-secondary: #3b82f6;
-            --text-main: #f9fafb;
-            --text-muted: #9ca3af;
-            --cyan: #06b6d4;
-            --cyan-glow: rgba(6, 182, 212, 0.3);
-            --emerald: #10b981;
-            --rose: #f43f5e;
-            --amber: #f59e0b;
-            --font-sans: 'Inter', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-        }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>StaticsMaster · Car Equilibrium</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ══ CORE THEME ══ */
+:root{
+  --bg:#07090f;--surface:#0d1117;--surface2:#111827;--surface3:#162033;
+  --border:rgba(56,189,248,.13);--divider:rgba(56,189,248,.07);
+  --text:#e2eeff;--muted:#8ba3c9;--faint:#4a607e;
+  --cyan:#38bdf8;--cyan-glow:rgba(56,189,248,.18);
+  --violet:#a78bfa;--violet-glow:rgba(167,139,250,.15);
+  --orange:#fb923c;--orange-glow:rgba(251,146,60,.15);
+  --green:#34d399;--green-glow:rgba(52,211,153,.14);
+  --rose:#fb7185;--rose-glow:rgba(251,113,133,.13);
+  --yellow:#fbbf24;--yellow-glow:rgba(251,191,36,.13);
+  --grid-line:rgba(56,189,248,.04);
+  --font:'Space Grotesk',sans-serif;--mono:'Space Mono',monospace;
+  --r-sm:8px;--r-md:14px;--r-lg:20px;
+}
+[data-theme="light"]{
+  --bg:#f0f4fa;--surface:#fff;--surface2:#f5f9ff;--surface3:#eaf2ff;
+  --border:rgba(14,80,180,.10);--divider:rgba(14,80,180,.06);
+  --text:#0f172a;--muted:#4b6b96;--faint:#94a3b8;
+  --cyan:#0284c7;--cyan-glow:rgba(2,132,199,.10);
+  --violet:#7c3aed;--violet-glow:rgba(124,58,237,.10);
+  --orange:#ea580c;--orange-glow:rgba(234,88,12,.10);
+  --green:#059669;--green-glow:rgba(5,150,105,.10);
+  --rose:#e11d48;--rose-glow:rgba(225,29,72,.10);
+  --yellow:#d97706;--yellow-glow:rgba(217,119,6,.10);
+  --grid-line:rgba(14,80,180,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{
+  font-family:var(--font);background:var(--bg);
+  background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);
+  background-size:40px 40px;color:var(--text);min-height:100vh;
+}
+button,input{font-family:var(--font);color:var(--text);border:none;outline:none;background:none;cursor:pointer}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
-        }
+/* ══ LAYOUT ══ */
+.hdr{position:sticky;top:0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:0 24px;height:56px;background:color-mix(in srgb,var(--surface) 85%,transparent);border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:grid;place-items:center;font-family:var(--mono);font-size:12px;font-weight:700;color:#fff;box-shadow:0 0 20px var(--cyan-glow)}
+.brand-name{font-size:15px;font-weight:700;letter-spacing:-.3px}
+.brand-sub{font-size:10px;color:var(--muted);font-family:var(--mono);letter-spacing:.4px;text-transform:uppercase}
+.hdr-r{display:flex;gap:8px;align-items:center}
+.pill{padding:4px 11px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border:1px solid var(--border);color:var(--cyan);background:var(--cyan-glow)}
+.sym-pill{color:var(--violet);background:var(--violet-glow);border-color:rgba(167,139,250,.25)}
+.icon-btn{width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);display:grid;place-items:center;transition:.2s}
+.icon-btn:hover{border-color:var(--cyan);background:var(--cyan-glow)}
 
-        body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            font-family: var(--font-sans);
-            overflow: hidden;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+.layout{display:grid;grid-template-columns:355px 1fr;min-height:calc(100vh - 56px)}
+.sidebar{padding:16px;border-right:1px solid var(--border);background:color-mix(in srgb,var(--surface) 70%,transparent);display:flex;flex-direction:column;gap:12px;overflow-y:auto}
+.main-col{padding:16px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
 
-        /* ═══ HEADER ═══ */
-        header {
-            height: 64px;
-            background: var(--panel);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            padding: 0 24px;
-            justify-content: space-between;
-            z-index: 100;
-        }
+/* ══ CARDS & INPUTS ══ */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.card-pad{padding:16px}
+.card-head{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px}
+.ibox{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:13px;flex-shrink:0}
+.ib-cyan{background:var(--cyan-glow);color:var(--cyan);border:1px solid rgba(56,189,248,.25)}
+.ib-violet{background:var(--violet-glow);color:var(--violet);border:1px solid rgba(167,139,250,.25)}
+.ib-orange{background:var(--orange-glow);color:var(--orange);border:1px solid rgba(251,146,60,.25)}
+.ib-green{background:var(--green-glow);color:var(--green);border:1px solid rgba(52,211,153,.25)}
+.ct{font-size:12px;font-weight:700}.cs{font-size:10px;color:var(--muted);margin-top:1px}
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+.slabel{font-size:9px;font-weight:700;font-family:var(--mono);color:var(--faint);letter-spacing:1px;text-transform:uppercase;padding:8px 0 6px;border-bottom:1px solid var(--divider);margin:4px 0 8px}
+.field label{display:flex;justify-content:space-between;align-items:center;font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
+.utag{font-size:9px;font-family:var(--mono);text-transform:none;letter-spacing:0;font-weight:400;padding:1px 6px;border-radius:999px}
+.utag-c{color:var(--cyan);background:var(--cyan-glow);border:1px solid rgba(56,189,248,.2)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.iw input{width:100%;padding:8px 11px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-size:12px;transition:.2s;color:var(--text)}
+.iw input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px var(--cyan-glow)}
+.iw input.sym{border-color:rgba(167,139,250,.5);color:var(--violet);font-family:var(--mono);background:rgba(167,139,250,.05)}
 
-        .logo {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--cyan), var(--accent-primary));
-            border-radius: 8px;
-            display: grid;
-            place-items: center;
-            font-weight: 800;
-            color: white;
-            font-size: 14px;
-        }
+.solve-btn{width:100%;padding:11px;border-radius:12px;font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--cyan),var(--violet),var(--orange));box-shadow:0 4px 20px rgba(56,189,248,.2);transition:.25s;position:relative;overflow:hidden;margin-top:10px}
+.solve-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,.13),transparent);transform:translateX(-100%);transition:.5s}
+.solve-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(56,189,248,.3)}
 
-        .brand-text {
-            display: flex;
-            flex-direction: column;
-        }
+.sym-banner{display:none;padding:9px 12px;border-radius:10px;background:var(--violet-glow);border:1px solid rgba(167,139,250,.3);font-size:11px;color:var(--violet);line-height:1.6;margin-top:8px}
+.sym-banner.on{display:block}
+.errmsg{display:none;font-size:11px;color:var(--rose);background:var(--rose-glow);border:1px solid rgba(251,113,133,.25);padding:8px 11px;border-radius:999px;margin-top:8px}
 
-        .brand-name {
-            font-weight: 700;
-            font-size: 16px;
-            letter-spacing: -0.02em;
-        }
+/* ══ RESULTS CHIPS ══ */
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.chip{padding:10px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);text-align:center;position:relative;overflow:hidden;transition:.25s}
+.ck{font-size:9px;font-weight:700;font-family:var(--mono);letter-spacing:.5px;text-transform:uppercase;color:var(--faint);margin-bottom:4px}
+.cv{font-family:var(--mono);font-size:15px;font-weight:700;line-height:1.2;word-break:break-all}
+.cv.sym-val{font-size:11px;color:var(--violet)}
+.cu{font-size:9px;color:var(--muted);margin-top:2px}
+.chip.big{grid-column:1/-1;background:linear-gradient(135deg,rgba(56,189,248,.06),rgba(167,139,250,.06));border-color:rgba(56,189,248,.3)}
+.chip.big .cv{font-size:18px;color:var(--cyan)}
 
-        .brand-tag {
-            font-size: 10px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
+/* ══ CANVAS ZONE ══ */
+.fbd-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border)}
+.tabs{display:flex;gap:3px;background:var(--surface2);padding:3px;border-radius:10px}
+.tab{padding:5px 12px;border-radius:8px;font-size:11px;font-weight:700;color:var(--muted);transition:.2s}
+.tab.active{background:var(--surface);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.canvas-zone{position:relative;background:var(--bg);display:grid;place-items:center;padding:14px}
+#fbdCanvas{border-radius:12px;width:100%;max-width:940px;height:auto;display:block;box-shadow:0 8px 40px rgba(0,0,0,.55)}
+.status{position:absolute;right:22px;bottom:20px;display:none;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid var(--border);background:color-mix(in srgb,var(--surface) 80%,transparent);backdrop-filter:blur(8px)}
+.status.on{display:flex}
+.dot{width:6px;height:6px;border-radius:999px;background:var(--green);animation:blink 1.2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 
-        .nav-tools {
-            display: flex;
-            gap: 8px;
-        }
+/* ══ STEPS ══ */
+.steps{display:flex;flex-direction:column}
+.step{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--divider)}
+.snum{width:24px;height:24px;border-radius:999px;flex-shrink:0;display:grid;place-items:center;font:700 10px var(--mono);color:var(--muted);background:var(--surface2);border:1px solid var(--border)}
+.stitle{font-size:12px;font-weight:700;margin-bottom:2px}
+.sdesc{font-size:11px;color:var(--muted);line-height:1.6}
+.math{margin-top:5px;padding:6px 10px;border-radius:7px;background:var(--surface2);border-left:3px solid var(--cyan);font:11px var(--mono);color:var(--cyan);line-height:1.9}
+.math.sm{border-left-color:var(--violet);color:var(--violet)}
 
-        .tool-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+.eqbox{padding:14px 16px;border-radius:12px;background:linear-gradient(135deg,rgba(56,189,248,.05),rgba(167,139,250,.05));border:1px solid rgba(56,189,248,.2);font:13px/1.9 var(--mono);word-break:break-all}
+.case-banner{padding:9px 12px;border-radius:9px;font-size:11px;line-height:1.6;margin-bottom:10px}
+.cb-warn{background:var(--orange-glow);border:1px solid rgba(251,146,60,.3);color:var(--orange)}
+.cb-info{background:var(--cyan-glow);border:1px solid rgba(56,189,248,.3);color:var(--cyan)}
+.cb-sym{background:var(--violet-glow);border:1px solid rgba(167,139,250,.3);color:var(--violet)}
+.cb-rose{background:var(--rose-glow);border:1px solid rgba(251,113,133,.3);color:var(--rose)}
+.notice{padding:12px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);font-size:11px;color:var(--muted);line-height:1.7}
 
-        .tool-btn.active {
-            background: var(--accent-primary);
-            color: white;
-            border-color: var(--accent-primary);
-        }
-
-        /* ═══ MAIN LAYOUT ═══ */
-        main {
-            display: grid;
-            grid-template-columns: 400px 1fr;
-            flex-grow: 1;
-            overflow: hidden;
-        }
-
-        /* ═══ SIDEBAR ═══ */
-        .sidebar {
-            background: var(--panel);
-            border-right: 1px solid var(--border);
-            overflow-y: auto;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .input-group {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-        }
-
-        .group-title {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .field-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .field label {
-            display: block;
-            font-size: 10px;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-
-        .input-wrapper input {
-            width: 100%;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px 12px;
-            color: var(--text-main);
-            font-family: var(--font-mono);
-            font-size: 13px;
-            transition: 0.2s;
-        }
-
-        .input-wrapper input:focus {
-            outline: none;
-            border-color: var(--cyan);
-            box-shadow: 0 0 0 2px var(--cyan-glow);
-        }
-
-        .solve-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 8px;
-            transition: 0.2s;
-        }
-
-        /* ═══ RESULTS PANEL ═══ */
-        .results-panel {
-            display: none;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .res-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-        }
-
-        .res-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .res-box {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            padding: 12px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .res-box label {
-            display: block;
-            font-size: 9px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 4px;
-        }
-
-        .res-box value {
-            font-family: var(--font-mono);
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--emerald);
-        }
-
-        /* ═══ CANVAS AREA ═══ */
-        .canvas-area {
-            position: relative;
-            background: #0d1117;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .canvas-toolbar {
-            height: 60px;
-            background: rgba(17, 24, 39, 0.6);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 24px;
-        }
-
-        .view-tabs {
-            display: flex;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 4px;
-            border-radius: 10px;
-        }
-
-        .tab {
-            padding: 6px 16px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            border-radius: 8px;
-        }
-
-        .tab.active {
-            background: var(--card);
-            color: white;
-        }
-
-        canvas {
-            flex-grow: 1;
-            width: 100%;
-            height: 100%;
-        }
-
-        .solution-footer {
-            height: 200px;
-            background: var(--panel);
-            border-top: 1px solid var(--border);
-            padding: 24px;
-            overflow-y: auto;
-        }
-
-        .math {
-            font-family: var(--font-mono);
-            color: var(--cyan);
-            background: rgba(6, 182, 212, 0.05);
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-    </style>
+@media(max-width:960px){.layout{grid-template-columns:1fr}.sidebar{border-right:none;border-bottom:1px solid var(--border)}}
+</style>
 </head>
 <body>
 
-<header>
-    <div class="brand">
-        <div class="logo">SM</div>
-        <div class="brand-text">
-            <span class="brand-name">StaticsMaster Pro</span>
-            <span class="brand-tag">Engineering Analysis v4.2</span>
-        </div>
+<header class="hdr">
+  <div class="brand">
+    <div class="logo">SM</div>
+    <div>
+      <div class="brand-name">StaticsMaster</div>
+      <div class="brand-sub">CAR CENTER OF MASS · ΣM = 0</div>
     </div>
-    <div class="nav-tools">
-        <button class="tool-btn active">NUMERIC</button>
-        <button class="tool-btn">SYMBOLIC</button>
-    </div>
+  </div>
+  <div class="hdr-r">
+    <div class="pill">Statics</div>
+    <div class="pill sym-pill" id="modeTag">NUMERIC</div>
+    <button class="icon-btn" id="themeBtn" title="Toggle theme">
+      <svg id="themeIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"></svg>
+    </button>
+  </div>
 </header>
 
-<main>
-    <aside class="sidebar">
-        <div class="input-group">
-            <div class="group-title"><span>📐</span> Geometry (Axles to Center)</div>
-            <div class="field-grid">
-                <div class="field"><label>Front Axle → G</label><div class="input-wrapper"><input id="in_df" value="1386"></div></div>
-                <div class="field"><label>G → Rear Axle</label><div class="input-wrapper"><input id="in_dr" value="964"></div></div>
-            </div>
-            <div class="group-title"><span>⚖️</span> Load / Physics</div>
-            <div class="field-grid">
-                <div class="field"><label>Total Mass (kg)</label><div class="input-wrapper"><input id="in_m" value="1400"></div></div>
-                <div class="field"><label>Gravity (m/s²)</label><div class="input-wrapper"><input id="in_g" value="9.81"></div></div>
-            </div>
-            <button class="solve-btn" onclick="calculate()">🚀 Solve & Animate</button>
-        </div>
-
-        <div id="resultsPanel" class="results-panel">
-            <div class="res-card">
-                <div class="group-title"><span>📊</span> Statics Analysis</div>
-                <div class="res-grid">
-                    <div class="res-box"><label>Weight (W)</label><value id="res_W">-</value></div>
-                    <div class="res-box"><label>Wheelbase (L)</label><value id="res_L">-</value></div>
-                    <div class="res-box"><label>Front Reaction</label><value id="res_Nf">-</value></div>
-                    <div class="res-box"><label>Rear Reaction</label><value id="res_Nr">-</value></div>
-                </div>
-            </div>
-        </div>
-    </aside>
-
-    <div class="canvas-area">
-        <div class="canvas-toolbar">
-            <div style="display: flex; flex-direction: column;">
-                <span style="font-size: 13px; font-weight: 700;">Free Body Diagram</span>
-                <span style="font-size: 10px; color: var(--text-muted);">Real-time Force Equilibrium</span>
-            </div>
-            <div class="view-tabs">
-                <div class="tab active" onclick="setView('fbd', this)">Full FBD</div>
-                <div class="tab" onclick="setView('geom', this)">Geometry</div>
-                <div class="tab" onclick="setView('moments', this)">Moments</div>
-            </div>
-        </div>
-        <canvas id="mainCanvas"></canvas>
-        <div class="solution-footer">
-            <div class="group-title"><span>📝</span> Step-by-Step Solution</div>
-            <div style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">
-                1. $W = m \cdot g$<br>
-                2. $L = d_f + d_r$<br>
-                3. $\sum M_B = 0 \rightarrow N_f = (W \cdot d_r) / L$<br>
-                4. $\sum M_A = 0 \rightarrow N_r = (W \cdot d_f) / L$
-            </div>
-        </div>
+<div class="layout">
+<aside class="sidebar">
+  <div class="card card-pad">
+    <div class="card-head">
+      <div class="ibox ib-cyan">📐</div>
+      <div>
+        <div class="ct">Inputs — Numbers OR Symbols</div>
+        <div class="cs">Type 1400, or m, or $, or anything.</div>
+      </div>
     </div>
+
+    <div class="slabel">Geometry (Axles to G)</div>
+    <div class="field-row">
+      <div class="field">
+        <label>Front → G <span class="utag utag-c">mm/sym</span></label>
+        <div class="iw"><input id="inp_df" value="1386" placeholder="1386"></div>
+      </div>
+      <div class="field">
+        <label>G → Rear <span class="utag utag-c">mm/sym</span></label>
+        <div class="iw"><input id="inp_dr" value="964" placeholder="964"></div>
+      </div>
+    </div>
+
+    <div class="slabel">Physics</div>
+    <div class="field-row">
+      <div class="field">
+        <label>Mass <span class="utag utag-v">kg / sym</span></label>
+        <div class="iw"><input id="inp_mass" value="1400" placeholder="1400"></div>
+      </div>
+      <div class="field">
+        <label>Gravity <span class="utag utag-v">m/s²</span></label>
+        <div class="iw"><input id="inp_g" value="9.81" placeholder="9.81"></div>
+      </div>
+    </div>
+
+    <button class="solve-btn" id="solveBtn">⚡ Solve &amp; Animate</button>
+    <div class="errmsg" id="errMsg"></div>
+    <div class="sym-banner" id="symBanner">🔣 <strong>Symbolic mode</strong> — Formulas active.</div>
+  </div>
+
+  <div class="card card-pad" id="resultCard" style="display:none">
+    <div class="card-head">
+      <div class="ibox ib-green">✓</div>
+      <div><div class="ct">Results</div><div class="cs">Calculated Normal Forces</div></div>
+    </div>
+    <div id="caseBanner" style="display:none"></div>
+    <div class="rg">
+      <div class="chip"><div class="ck">Weight W</div><div class="cv" id="r_W">—</div><div class="cu">N</div></div>
+      <div class="chip"><div class="ck">Wheelbase L</div><div class="cv" id="r_L">—</div><div class="cu">m</div></div>
+      <div class="chip"><div class="ck">Front N_f</div><div class="cv" id="r_Nf">—</div><div class="cu">N</div></div>
+      <div class="chip"><div class="ck">Rear N_r</div><div class="cv" id="r_Nr">—</div><div class="cu">N</div></div>
+      <div class="chip big"><div class="ck">Single Front Tire</div><div class="cv" id="r_tireF">—</div><div class="cu">N / tire</div></div>
+      <div class="chip big"><div class="ck">Single Rear Tire</div><div class="cv" id="r_tireR">—</div><div class="cu">N / tire</div></div>
+    </div>
+  </div>
+</aside>
+
+<main class="main-col">
+  <section class="card">
+    <div class="fbd-header">
+      <div>
+        <div class="ct">Free Body Diagram</div>
+        <div class="cs">Dynamic Vector Scaling</div>
+      </div>
+      <div class="tabs">
+        <button class="tab active" data-tab="fbd">Full FBD</button>
+        <button class="tab" data-tab="geom">Geometry</button>
+        <button class="tab" data-tab="moments">Moments</button>
+      </div>
+    </div>
+    <div class="canvas-zone" style="min-height:540px">
+      <canvas id="fbdCanvas" width="940" height="540"></canvas>
+      <div class="status" id="statusBadge"><span class="dot"></span><span id="statusTxt">Drawing…</span></div>
+    </div>
+  </section>
+
+  <section class="card card-pad">
+    <div class="card-head">
+      <div class="ibox ib-orange">📝</div>
+      <div><div class="ct">Step-by-Step Solution</div></div>
+    </div>
+    <div id="stepsWrap" class="notice">Enter values above.</div>
+  </section>
+
+  <section class="card card-pad">
+    <div class="card-head">
+      <div class="ibox ib-violet">∑</div>
+      <div><div class="ct">Equilibrium Equations</div></div>
+    </div>
+    <div class="eqbox" id="eqBox">ΣM = 0</div>
+  </section>
 </main>
+</div>
 
 <script>
-    const canvas = document.getElementById('mainCanvas');
-    const ctx = canvas.getContext('2d');
-    let viewMode = 'fbd';
-    let data = null;
+/* ══ THEME ══ */
+const root=document.documentElement; let dark=true;
+function setIcon(){
+  document.getElementById('themeIcon').innerHTML=dark
+    ?'<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>'
+    :'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+}
+setIcon();
+document.getElementById('themeBtn').addEventListener('click',()=>{
+  dark=!dark;root.setAttribute('data-theme',dark?'dark':'light');setIcon();
+  if(window._P)animateTab(window._P,window._tab||'fbd',true);else drawPlaceholder();
+});
 
-    function resize() {
-        canvas.width = canvas.clientWidth * window.devicePixelRatio;
-        canvas.height = canvas.clientHeight * window.devicePixelRatio;
-        if(data) draw(1);
-    }
-    window.addEventListener('resize', resize);
-    setTimeout(resize, 100);
+function TH(){
+  return dark?{
+    bg:'#07090f',cvs:'#0d1117',text:'#e2eeff',muted:'#8ba3c9',faint:'#4a607e',
+    carBody:'#1e3a5f',carLine:'#38bdf8',ground:'#1e293b',gndL:'#334155',
+    wheel:'#1e3a5f',wheelR:'#38bdf8', Nf:'#34d399',Nr:'#fbbf24',weight:'#fb7185',
+    dim:'#a78bfa',pt:'#38bdf8', grid:'rgba(56,189,248,.04)',textBg:'rgba(13,17,23,0.75)'
+  }:{
+    bg:'#f0f4fa',cvs:'#ffffff',text:'#0f172a',muted:'#4b6b96',faint:'#94a3b8',
+    carBody:'#bfdbfe',carLine:'#0284c7',ground:'#e2e8f0',gndL:'#94a3b8',
+    wheel:'#dbeafe',wheelR:'#0284c7', Nf:'#059669',Nr:'#d97706',weight:'#e11d48',
+    dim:'#7c3aed',pt:'#0284c7', grid:'rgba(14,80,180,.04)',textBg:'rgba(255,255,255,0.75)'
+  };
+}
 
-    function setView(m, el) {
-        viewMode = m;
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        el.classList.add('active');
-        if(data) draw(1);
-    }
+/* ══ PARSERS ══ */
+function parseV(id){
+  const raw=(document.getElementById(id).value||'').trim();
+  if(!raw)return null;
+  const n=parseFloat(raw);
+  if(!isNaN(n))return{isNum:true,num:n,str:raw};
+  return{isNum:false,num:null,str:raw};
+}
+function num(v,fb=1){return(v&&v.isNum)?v.num:fb;}
+function str(v,fb='?'){return v?v.str:fb;}
+function isN(v){return v&&v.isNum;}
+function fmtN(v,d=3){if(!isFinite(v))return '∞';return Number(v).toFixed(d).replace(/\.?0+$/,'');}
 
-    function calculate() {
-        const df = parseFloat(document.getElementById('in_df').value) || 0;
-        const dr = parseFloat(document.getElementById('in_dr').value) || 0;
-        const m = parseFloat(document.getElementById('in_m').value) || 0;
-        const g = parseFloat(document.getElementById('in_g').value) || 0;
+/* ══ PHYSICS ══ */
+function compute(){
+  const vDF=parseV('inp_df'), vDR=parseV('inp_dr'), vM=parseV('inp_mass'), vG=parseV('inp_g');
+  if(!vDF||!vDR||!vM||!vG)return null;
+  const allNum = [vDF,vDR,vM,vG].every(v=>v.isNum);
+  const df_m=num(vDF,1386)/1000, dr_m=num(vDR,964)/1000, massN=num(vM,1400), gN=num(vG,9.81);
+  const L_m=df_m+dr_m, W_num=massN*gN;
+  const Nf_num=allNum?(Math.abs(L_m)>1e-9?W_num*dr_m/L_m:0):null;
+  const Nr_num=allNum?(Math.abs(L_m)>1e-9?W_num*df_m/L_m:0):null;
+  return{ vDF, vDR, vM, vG, allNum, symbolic:!allNum, df_m, dr_m, L_m, massN, gN, W_num, Nf_num, Nr_num,
+    sDF:isN(vDF)?fmtN(df_m,3):str(vDF), sDR:isN(vDR)?fmtN(dr_m,3):str(vDR),
+    sL:`(${isN(vDF)?fmtN(df_m,3):str(vDF)} + ${isN(vDR)?fmtN(dr_m,3):str(vDR)})`,
+    sW:`(${str(vM)} · ${str(vG)})`, sNf:`(W·d_r)/L`, sNr:`(W·d_f)/L`,
+    zeroMass:(isN(vM) && massN===0) || (isN(vG) && gN===0),
+    zeroL:allNum && Math.abs(L_m)<1e-9, negDF:isN(vDF)&&df_m<0, negDR:isN(vDR)&&dr_m<0
+  };
+}
 
-        const L_m = (df + dr) / 1000;
-        const W_n = m * g;
-        
-        data = {
-            df_m: df / 1000, dr_m: dr / 1000, L: L_m, W: W_n,
-            Nf: (W_n * (dr / 1000)) / L_m, Nr: (W_n * (df / 1000)) / L_m
-        };
+/* ══ UI RENDERING ══ */
+function showResults(p){
+  document.getElementById('resultCard').style.display='block';
+  document.getElementById('modeTag').textContent=p.symbolic?'SYMBOLIC':'NUMERIC';
+  document.getElementById('symBanner').classList.toggle('on',p.symbolic);
+  const banner=document.getElementById('caseBanner'); let bh='';
+  if(p.symbolic) bh=`<div class="case-banner cb-sym">🔣 Symbolic mode active.</div>`;
+  else if(p.zeroMass) bh=`<div class="case-banner cb-info">ℹ️ System is weightless (Mass or G is 0).</div>`;
+  else if(p.zeroL) bh=`<div class="case-banner cb-rose">❌ Divide by zero: Wheelbase is 0.</div>`;
+  else if(p.negDF||p.negDR) bh=`<div class="case-banner cb-warn">⚠️ G is outside axles. Tipping occurs.</div>`;
+  banner.innerHTML=bh; banner.style.display=bh?'block':'none';
+  const sc=(id,v)=>{document.getElementById(id).textContent=v;};
+  if(p.symbolic){
+    sc('r_W', p.sW); sc('r_L', p.sL); sc('r_Nf', p.sNf); sc('r_Nr', p.sNr); sc('r_tireF','Nf/2'); sc('r_tireR','Nr/2');
+  } else {
+    sc('r_W', p.W_num.toFixed(1)); sc('r_L', p.L_m.toFixed(3)); sc('r_Nf', p.Nf_num.toFixed(2)); sc('r_Nr', p.Nr_num.toFixed(2));
+    sc('r_tireF', (p.Nf_num/2).toFixed(2)); sc('r_tireR', (p.Nr_num/2).toFixed(2));
+  }
+  buildEq(p); buildSteps(p);
+}
 
-        document.getElementById('resultsPanel').style.display = 'flex';
-        document.getElementById('res_W').textContent = data.W.toFixed(1) + ' N';
-        document.getElementById('res_L').textContent = data.L.toFixed(3) + ' m';
-        document.getElementById('res_Nf').textContent = data.Nf.toFixed(1) + ' N';
-        document.getElementById('res_Nr').textContent = data.Nr.toFixed(1) + ' N';
+function buildEq(p){
+  const nF=dark?'#34d399':'#059669', nR=dark?'#fbbf24':'#d97706';
+  document.getElementById('eqBox').innerHTML=p.symbolic?`ΣM_R = 0 → Nf = ${p.sNf}<br>ΣM_F = 0 → Nr = ${p.sNr}`:
+    `<span style="color:${nF}">Nf</span> = (${p.W_num.toFixed(1)} · ${p.dr_m.toFixed(3)}) / ${p.L_m.toFixed(3)} = ${p.Nf_num.toFixed(2)}N<br>`+
+    `<span style="color:${nR}">Nr</span> = (${p.W_num.toFixed(1)} · ${p.df_m.toFixed(3)}) / ${p.L_m.toFixed(3)} = ${p.Nr_num.toFixed(2)}N`;
+}
 
-        animate();
-    }
+function buildSteps(p){
+  const steps=p.symbolic?[{t:'Wheelbase',m:`L = ${p.sL}`},{t:'Weight',m:`W = ${p.sW}`},{t:'Nf Force',m:`Nf = (W·dr)/L`}]
+    :[{t:'Wheelbase',m:`L = ${p.L_m.toFixed(3)}m`},{t:'Weight',m:`W = ${p.W_num.toFixed(2)}N`},{t:'Final Solution',m:`Nf=${p.Nf_num.toFixed(1)}N, Nr=${p.Nr_num.toFixed(1)}N`}];
+  document.getElementById('stepsWrap').innerHTML=steps.map(s=>`<div class="step"><div class="snum">•</div><div><div class="stitle">${s.t}</div><div class="math">${s.m}</div></div></div>`).join('');
+}
 
-    function animate() {
-        let start = null;
-        function step(now) {
-            if(!start) start = now;
-            let progress = Math.min(1, (now - start) / 1000);
-            draw(progress);
-            if(progress < 1) requestAnimationFrame(step);
-        }
-        requestAnimationFrame(step);
-    }
+/* ══ CANVAS ══ */
+const canvas=document.getElementById('fbdCanvas'), ctx=canvas.getContext('2d'); let _raf=null;
+function bgFill(){
+  const t=TH(); ctx.fillStyle=t.cvs; ctx.fillRect(0,0,940,540);
+  ctx.strokeStyle=t.grid; ctx.lineWidth=1;
+  for(let i=0;i<940;i+=40){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,540);ctx.stroke();}
+  for(let i=0;i<540;i+=40){ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(940,i);ctx.stroke();}
+}
+function txtBox(x,y,s,col,font,a=1,align='left'){
+  ctx.save(); ctx.globalAlpha=a; ctx.font=font; ctx.textAlign=align; ctx.textBaseline='middle';
+  const w=ctx.measureText(s).width; ctx.fillStyle=TH().textBg; ctx.fillRect(x-(align==='center'?w/2:0)-5,y-10,w+10,20);
+  ctx.fillStyle=col; ctx.fillText(s,x,y); ctx.restore();
+}
+function arw(x1,y1,x2,y2,col,p,lbl,lx,ly){
+  if(p<=0)return; const px=x1+(x2-x1)*p, py=y1+(y2-y1)*p;
+  ctx.save(); ctx.strokeStyle=col; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(px,py); ctx.stroke();
+  if(p>.8){
+    ctx.fillStyle=col; const ang=Math.atan2(y2-y1,x2-x1); ctx.translate(px,py); ctx.rotate(ang);
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-15,-7); ctx.lineTo(-15,7); ctx.fill();
+    ctx.restore(); txtBox(lx||x2,ly||y2-15,lbl,col,'bold 14px Space Mono',p);
+  } else ctx.restore();
+}
+function getCoords(p){
+  const lR=p.allNum?Math.max(0.1,Math.abs(p.L_m)):2.3, scale=700/lR, By=420, Ax=470-(lR*scale)/2, Bx=Ax+lR*scale;
+  return{Ax,Bx,By,Gx:Ax+(p.allNum?p.df_m:1.38)*scale,Gy:By-80,CW:940,CH:540};
+}
 
-    function draw(progress) {
-        if(!data) return;
-        const w = canvas.width, h = canvas.height;
-        ctx.clearRect(0,0,w,h);
-        const groundY = h * 0.7, visualL = w * 0.5;
-        const Ax = (w/2) - (visualL/2), Bx = (w/2) + (visualL/2);
-        const Gx = Ax + (visualL * (data.df_m / data.L));
+function drawFBD(p,t){
+  bgFill(); const Th=TH(), C=getCoords(p), t1=Math.min(1,t*1.5), t2=Math.max(0,Math.min(1,(t-0.4)*1.6));
+  // Car
+  ctx.globalAlpha=t1; ctx.fillStyle=Th.carBody; ctx.beginPath(); ctx.roundRect(C.Ax-40,C.Gy-30,C.Bx-C.Ax+80,70,15); ctx.fill();
+  ctx.strokeStyle=Th.carLine; ctx.lineWidth=3; ctx.stroke();
+  [C.Ax,C.Bx].forEach(x=>{ctx.fillStyle=Th.wheel;ctx.beginPath();ctx.arc(x,C.By,25,0,7);ctx.fill();ctx.stroke();});
+  // Ground
+  ctx.strokeStyle=Th.gndL; ctx.beginPath(); ctx.moveTo(0,C.By+25); ctx.lineTo(940,C.By+25); ctx.stroke();
+  
+  // DYNAMIC ARROWS: CHANGED HERE
+  const fw=130;
+  // Weight arrow - only if mass > 0
+  if(p.symbolic || (p.allNum && p.W_num > 1e-3)) {
+     arw(C.Gx,C.Gy,C.Gx,C.Gy+fw,Th.weight,t2,'W',C.Gx+15,C.Gy+fw+10);
+  }
+  // Front force arrow - only if Nf > 0
+  if(p.symbolic || (p.allNum && Math.abs(p.Nf_num) > 1e-3)) {
+     arw(C.Ax,C.By,C.Ax,C.By-fw,Th.Nf,t2,'Nf',C.Ax-40,C.By-fw-5);
+  }
+  // Rear force arrow - only if Nr > 0
+  if(p.symbolic || (p.allNum && Math.abs(p.Nr_num) > 1e-3)) {
+     arw(C.Bx,C.By,C.Bx,C.By-fw,Th.Nr,t2,'Nr',C.Bx+15,C.By-fw-5);
+  }
+}
 
-        // Dotted Reference Lines
-        ctx.setLineDash([10, 10]); ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-        [Ax, Gx, Bx].forEach(x => {
-            ctx.beginPath(); ctx.moveTo(x, groundY - h*0.3); ctx.lineTo(x, groundY + h*0.3); ctx.stroke();
-        });
-        ctx.setLineDash([]);
+function drawGeom(p,t){
+  bgFill(); const Th=TH(), C=getCoords(p);
+  ctx.strokeStyle=Th.dim; ctx.setLineDash([5,5]); ctx.beginPath(); ctx.moveTo(C.Ax,C.By+40); ctx.lineTo(C.Bx,C.By+40); ctx.stroke(); ctx.setLineDash([]);
+  txtBox((C.Ax+C.Gx)/2,C.By+40,`df: ${p.sDF}m`,Th.dim,'14px Space Mono',t,'center');
+  txtBox((C.Gx+C.Bx)/2,C.By+40,`dr: ${p.sDR}m`,Th.dim,'14px Space Mono',t,'center');
+}
 
-        // Chassis & Wheels
-        ctx.fillStyle = '#1e293b'; ctx.beginPath();
-        ctx.roundRect(Ax - 150, groundY - 240, visualL + 300, 150, 40); ctx.fill();
-        ctx.strokeStyle = '#06b6d4'; ctx.lineWidth = 4; ctx.stroke();
-        [Ax, Bx].forEach(x => {
-            ctx.beginPath(); ctx.arc(x, groundY - 50, 60, 0, 7); ctx.fillStyle = '#0f172a'; ctx.fill();
-            ctx.strokeStyle = '#06b6d4'; ctx.lineWidth = 8; ctx.stroke();
-        });
+function drawMoments(p,t){
+  bgFill(); const Th=TH(), C=getCoords(p);
+  const fw=100;
+  // DYNAMIC ARROWS: CHANGED HERE
+  if(p.symbolic || (p.allNum && p.W_num > 1e-3)) arw(C.Gx,C.Gy,C.Gx,C.Gy+fw,Th.weight,t,'W');
+  if(p.symbolic || (p.allNum && Math.abs(p.Nf_num) > 1e-3)) arw(C.Ax,C.By,C.Ax,C.By-fw,Th.Nf,t,'Nf');
+  if(p.symbolic || (p.allNum && Math.abs(p.Nr_num) > 1e-3)) arw(C.Bx,C.By,C.Bx,C.By-fw,Th.Nr,t,'Nr');
+}
 
-        // TIERED DIMENSIONS (No Overlap Fix)
-        if(viewMode === 'geom') {
-            const t1 = groundY + 140, t2 = groundY + 280;
-            ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 2;
-            [Ax, Gx, Bx].forEach(x => { ctx.beginPath(); ctx.moveTo(x, groundY + 20); ctx.lineTo(x, t2 + 40); ctx.stroke(); });
-            
-            drawDim(Ax, Gx, t1, `df: ${(data.df_m*1000).toFixed(0)}mm`, '#a78bfa');
-            drawDim(Gx, Bx, t1, `dr: ${(data.dr_m*1000).toFixed(0)}mm`, '#a78bfa');
-            drawDim(Ax, Bx, t2, `Wheelbase L: ${data.L.toFixed(3)}m`, '#06b6d4');
-        }
+function animateTab(p,tab,sw=false){
+  if(_raf)cancelAnimationFrame(_raf);
+  const start=performance.now();
+  const frame=(now)=>{
+    const t=Math.min(1,(now-start)/1500);
+    if(tab==='fbd')drawFBD(p,t); else if(tab==='geom')drawGeom(p,t); else drawMoments(p,t);
+    if(t<1)_raf=requestAnimationFrame(frame);
+  };
+  _raf=requestAnimationFrame(frame);
+}
 
-        if(viewMode === 'fbd' || viewMode === 'moments') {
-            const arrowLen = 220 * progress;
-            drawArrow(Gx, groundY - 120, Gx, groundY - 120 + arrowLen, '#f43f5e', "W", "G");
-            drawArrow(Ax, groundY, Ax, groundY - arrowLen, '#10b981', "Nf", "A");
-            drawArrow(Bx, groundY, Bx, groundY - arrowLen, '#f59e0b', "Nr", "B");
-        }
-    }
+function drawPlaceholder(){
+  bgFill(); txtBox(470,270,'⚡ Enter values to start',TH().muted,'20px Space Grotesk',1,'center');
+}
 
-    function drawArrow(x1, y1, x2, y2, color, label, pt) {
-        ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 10;
-        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-        ctx.font = 'bold 36px Inter'; ctx.fillText(label, x2 + 30, y2 + 10);
-        ctx.font = 'bold 24px JetBrains Mono'; ctx.fillStyle = 'white'; ctx.fillText(pt, x1 - 45, y1 - 10);
-    }
-
-    function drawDim(x1, x2, y, text, color) {
-        ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.moveTo(x1 + 10, y); ctx.lineTo(x2 - 10, y); ctx.stroke();
-        ctx.font = 'bold 28px JetBrains Mono'; ctx.textAlign = 'center'; ctx.fillText(text, (x1+x2)/2, y - 25);
-    }
-
-    calculate();
+document.getElementById('solveBtn').addEventListener('click',()=>{
+  const p=compute(); if(!p)return; window._P=p; showResults(p); animateTab(p,window._tab||'fbd');
+});
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+    window._tab=btn.dataset.tab; if(window._P)animateTab(window._P,window._tab);
+  });
+});
+drawPlaceholder();
 </script>
 </body>
 </html>
