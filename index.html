@@ -110,7 +110,7 @@ button,input{font-family:var(--font);color:var(--text);border:none;outline:none;
 .tab{padding:5px 12px;border-radius:8px;font-size:11px;font-weight:700;color:var(--muted);transition:.2s}
 .tab.active{background:var(--surface);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.2)}
 .canvas-zone{position:relative;background:radial-gradient(ellipse at 30% 40%,color-mix(in srgb,var(--cyan-glow) 60%,transparent),transparent 55%),radial-gradient(ellipse at 70% 70%,color-mix(in srgb,var(--violet-glow) 40%,transparent),transparent 50%),var(--bg);display:grid;place-items:center;padding:14px}
-#fbdCanvas{border-radius:12px;max-width:100%;display:block;transition:opacity .3s,transform .4s cubic-bezier(.16,1,.3,1);box-shadow:0 8px 40px rgba(0,0,0,.55)}
+#fbdCanvas{border-radius:12px;width:100%;max-width:940px;height:auto;display:block;transition:opacity .3s,transform .4s cubic-bezier(.16,1,.3,1);box-shadow:0 8px 40px rgba(0,0,0,.55)}
 #fbdCanvas.switching{opacity:.05;transform:scale(.97)}
 .status{position:absolute;right:22px;bottom:20px;display:none;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid var(--border);background:color-mix(in srgb,var(--surface) 80%,transparent);backdrop-filter:blur(8px)}
 .status.on{display:flex}
@@ -134,6 +134,7 @@ button,input{font-family:var(--font);color:var(--text);border:none;outline:none;
 .cb-warn{background:var(--orange-glow);border:1px solid rgba(251,146,60,.3);color:var(--orange)}
 .cb-info{background:var(--cyan-glow);border:1px solid rgba(56,189,248,.3);color:var(--cyan)}
 .cb-sym{background:var(--violet-glow);border:1px solid rgba(167,139,250,.3);color:var(--violet)}
+.cb-rose{background:var(--rose-glow);border:1px solid rgba(251,113,133,.3);color:var(--rose)}
 .notice{padding:12px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);font-size:11px;color:var(--muted);line-height:1.7}
 
 @media(max-width:960px){.layout{grid-template-columns:1fr}.sidebar{border-right:none;border-bottom:1px solid var(--border)}}
@@ -278,6 +279,7 @@ function TH(){
     Nf:'#34d399',Nr:'#fbbf24',weight:'#fb7185',
     dim:'#a78bfa',pt:'#38bdf8',
     grid:'rgba(56,189,248,.04)',box:'rgba(13,17,23,.92)',boxB:'rgba(56,189,248,.28)',
+    textBg:'rgba(13,17,23,0.75)'
   }:{
     bg:'#f0f4fa',cvs:'#ffffff',text:'#0f172a',muted:'#4b6b96',faint:'#94a3b8',
     carBody:'#bfdbfe',carLine:'#0284c7',ground:'#e2e8f0',gndL:'#94a3b8',
@@ -285,6 +287,7 @@ function TH(){
     Nf:'#059669',Nr:'#d97706',weight:'#e11d48',
     dim:'#7c3aed',pt:'#0284c7',
     grid:'rgba(14,80,180,.04)',box:'rgba(255,255,255,.95)',boxB:'rgba(14,80,180,.25)',
+    textBg:'rgba(255,255,255,0.75)'
   };
 }
 
@@ -333,9 +336,9 @@ function compute(){
   const W_num = massN * gN;
 
   // Equilibrium: Sum M_rear = 0 -> Nf * L = W * dr -> Nf = W*dr/L
-  const Nf_num = allNum ? (L_m > 1e-9 ? W_num * dr_m / L_m : 0) : null;
+  const Nf_num = allNum ? (Math.abs(L_m) > 1e-9 ? W_num * dr_m / L_m : 0) : null;
   // Equilibrium: Sum M_front = 0 -> Nr * L = W * df -> Nr = W*df/L
-  const Nr_num = allNum ? (L_m > 1e-9 ? W_num * df_m / L_m : 0) : null;
+  const Nr_num = allNum ? (Math.abs(L_m) > 1e-9 ? W_num * df_m / L_m : 0) : null;
 
   // Symbolic representation
   const sDF = isN(vDF)?fmtN(df_m,3):str(vDF);
@@ -354,9 +357,12 @@ function compute(){
     df_m, dr_m, L_m, massN, gN, W_num, Nf_num, Nr_num,
     sDF, sDR, sL, sW, sNf, sNr, sNfTire, sNrTire,
     zeroMass: isN(vM) && massN === 0,
+    zeroG: isN(vG) && Math.abs(gN) < 1e-9,
     zeroDF: isN(vDF) && Math.abs(df_m) < 1e-9,
     zeroDR: isN(vDR) && Math.abs(dr_m) < 1e-9,
-    zeroL: allNum && Math.abs(L_m) < 1e-9
+    zeroL: allNum && Math.abs(L_m) < 1e-9,
+    negDF: isN(vDF) && df_m < 0,
+    negDR: isN(vDR) && dr_m < 0
   };
 }
 function fmt(v,d=3){if(v===null||v===undefined)return '?';if(!isFinite(v))return '∞';return Number(v).toFixed(d);}
@@ -394,10 +400,14 @@ function showResults(p){
 
   const banner=document.getElementById('caseBanner'); let bh='';
   if(p.symbolic) bh=`<div class="case-banner cb-sym">🔣 <strong>Symbolic mode:</strong> Formulas generated based on symbols. FBD uses fallback proportions.</div>`;
-  else if(p.zeroMass) bh=`<div class="case-banner cb-info">ℹ️ <strong>Zero mass:</strong> W = 0 → No normal forces required.</div>`;
+  else if(p.zeroMass) bh=`<div class="case-banner cb-info">ℹ️ <strong>Zero Mass:</strong> W = 0 → No normal forces required to hold the car up.</div>`;
+  else if(p.zeroG) bh=`<div class="case-banner cb-info">ℹ️ <strong>Zero Gravity (g=0):</strong> The system is weightless. Therefore, no normal forces are required from the tires to support it.</div>`;
+  else if(p.zeroL) bh=`<div class="case-banner cb-rose">❌ <strong>Zero Wheelbase:</strong> Mathematically impossible layout. The car axles cannot occupy the exact same coordinate without dividing by zero.</div>`;
+  else if(p.negDF) bh=`<div class="case-banner cb-warn">⚠️ <strong>Negative Front Distance:</strong> Center of mass is physically <em>in front</em> of the front axle. The car will tip forward unless the rear axle is tied down (Negative rear normal force).</div>`;
+  else if(p.negDR) bh=`<div class="case-banner cb-warn">⚠️ <strong>Negative Rear Distance:</strong> Center of mass is physically <em>behind</em> the rear axle. The car will tip backward (wheelie) unless the front axle is tied down (Negative front normal force).</div>`;
   else if(p.zeroDF) bh=`<div class="case-banner cb-warn">⚠️ <strong>Center of Mass over Front Axle:</strong> d_f = 0. All weight is supported by front tires (N_r = 0).</div>`;
   else if(p.zeroDR) bh=`<div class="case-banner cb-warn">⚠️ <strong>Center of Mass over Rear Axle:</strong> d_r = 0. All weight is supported by rear tires (N_f = 0).</div>`;
-  else if(p.zeroL) bh=`<div class="case-banner cb-rose">❌ <strong>Zero Wheelbase:</strong> Mathematically impossible layout.</div>`;
+  
   banner.innerHTML=bh; banner.style.display=bh?'block':'none';
 
   function sc(id,val){
@@ -425,7 +435,7 @@ function showResults(p){
 }
 
 function buildEq(p){
-  const nF=dark?'#34d399':'#059669', nR=dark?'#fbbf24':'#d97706', wC=dark?'#fb7185':'#e11d48', dim=dark?'#a78bfa':'#7c3aed';
+  const nF=dark?'#34d399':'#059669', nR=dark?'#fbbf24':'#d97706', wC=dark?'#fb7185':'#e11d48';
   let html;
   if(p.symbolic){
     html=`<span style="color:var(--muted)">1) ΣM_Rear = 0 → N_f(L) - W(d_r) = 0</span><br><strong style="color:${nF}">N_f = ${p.sNf}</strong><br><br><span style="color:var(--muted)">2) ΣM_Front = 0 → N_r(L) - W(d_f) = 0</span><br><strong style="color:${nR}">N_r = ${p.sNr}</strong>`;
@@ -470,114 +480,146 @@ function bgFill(){
   for(let y=0;y<canvas.height;y+=32){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke()}
 }
 
-function ease(t){return 1-Math.pow(1-Math.max(0,Math.min(1,t)),3)}
-function part(t,a,b){if(t<=a)return 0;if(t>=b)return 1;return ease((t-a)/(b-a))}
+// Improved Easing for smoother animation
+function easeOutQuart(x) { return 1 - Math.pow(1 - Math.max(0,Math.min(1,x)), 4); }
+function easeInOutQuad(x) { x=Math.max(0,Math.min(1,x)); return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; }
+function part(t,a,b){if(t<=a)return 0;if(t>=b)return 1;return easeOutQuart((t-a)/(b-a));}
+function partLinear(t,a,b){if(t<=a)return 0;if(t>=b)return 1;return (t-a)/(b-a);}
 
-function arw(x1,y1,x2,y2,col,prog,lbl2,lx,ly,lw=3){
-  const p=ease(Math.max(0,Math.min(1,prog)));
+function arw(x1,y1,x2,y2,col,prog,lbl2,lx,ly,lw=4){
+  if(prog<=0) return;
+  const p=easeOutQuart(prog);
   const px=x1+(x2-x1)*p,py=y1+(y2-y1)*p;
   ctx.save();ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';
-  ctx.shadowColor=col;ctx.shadowBlur=12;
+  ctx.shadowColor=col;ctx.shadowBlur=15;
   ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(px,py);ctx.stroke();
-  if(prog>.72){
-    const k=(prog-.72)/.28,ang=Math.atan2(y2-y1,x2-x1),hs=13;
+  
+  if(prog>.6){
+    const k=(prog-.6)/.4,ang=Math.atan2(y2-y1,x2-x1),hs=16;
     ctx.globalAlpha=k; ctx.beginPath();ctx.moveTo(px,py);
     ctx.lineTo(px-hs*Math.cos(ang-Math.PI/7),py-hs*Math.sin(ang-Math.PI/7));
     ctx.lineTo(px-hs*Math.cos(ang+Math.PI/7),py-hs*Math.sin(ang+Math.PI/7));
     ctx.closePath();ctx.fill();
   }
-  if(lbl2&&prog>.88){
-    ctx.globalAlpha=(prog-.88)/.12;ctx.shadowBlur=0;
-    ctx.font='bold 15px Space Grotesk,sans-serif'; ctx.fillText(lbl2,lx??x2+7,ly??y2-7);
+  if(lbl2&&prog>.8){
+    ctx.globalAlpha=(prog-.8)/.2;ctx.shadowBlur=0;
+    txtBox(lx??x2+10, ly??y2-10, lbl2, col, 'bold 16px Space Grotesk', ctx.globalAlpha);
   }
   ctx.restore();
 }
 
 function dot(x,y,col,r,lbl2,prog,lx,ly){
-  if(prog<=0)return;const p=ease(prog);
-  ctx.save();ctx.globalAlpha=p;ctx.shadowColor=col;ctx.shadowBlur=16;
+  if(prog<=0)return;const p=easeOutQuart(prog);
+  ctx.save();ctx.globalAlpha=p;ctx.shadowColor=col;ctx.shadowBlur=20;
   ctx.beginPath();ctx.arc(x,y,r*p,0,Math.PI*2);ctx.fillStyle=col;ctx.fill();
-  if(lbl2&&prog>.65){
-    ctx.globalAlpha=(prog-.65)/.35;ctx.shadowBlur=0;
-    ctx.font='bold 14px Space Grotesk,sans-serif';ctx.fillStyle=col;
-    ctx.fillText(lbl2,lx??x+8,ly??y-10);
+  if(lbl2&&prog>.7){
+    ctx.globalAlpha=(prog-.7)/.3;ctx.shadowBlur=0;
+    txtBox(lx??x+12, ly??y-12, lbl2, col, 'bold 14px Space Grotesk', ctx.globalAlpha);
   }
   ctx.restore();
 }
 
-function dash(x1,y1,x2,y2,col,prog=1,d=[6,4],w=1.8){
-  const p=ease(prog);ctx.save();ctx.strokeStyle=col;ctx.lineWidth=w;ctx.setLineDash(d);ctx.lineCap='round';
+function dash(x1,y1,x2,y2,col,prog=1,d=[8,5],w=2.5){
+  if(prog<=0)return;
+  const p=easeOutQuart(prog);ctx.save();ctx.strokeStyle=col;ctx.lineWidth=w;ctx.setLineDash(d);ctx.lineCap='round';
   ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x1+(x2-x1)*p,y1+(y2-y1)*p);ctx.stroke();ctx.restore();
 }
-function txt(x,y,s,col,font,a=1,align='left'){
-  if(a<=0)return;ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,a));
-  ctx.fillStyle=col;ctx.font=font||'11px Space Grotesk,sans-serif';
-  ctx.textAlign=align;ctx.fillText(s,x,y);ctx.restore();
+
+// Neat Text Box to prevent overlapping lines
+function txtBox(x,y,s,col,font,a=1,align='left'){
+  if(a<=0)return;
+  const Th=TH();
+  ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,a));
+  ctx.font=font||'12px Space Grotesk,sans-serif';
+  ctx.textAlign=align; ctx.textBaseline='middle';
+  
+  const m=ctx.measureText(s);
+  const w=m.width, h=parseInt(ctx.font,10)*1.2;
+  const padX=6, padY=4;
+  
+  let bx=x, by=y-h/2;
+  if(align==='center') bx=x-w/2;
+  if(align==='right') bx=x-w;
+
+  ctx.fillStyle=Th.textBg;
+  ctx.beginPath();ctx.roundRect(bx-padX, by-padY, w+padX*2, h+padY*2, 6);ctx.fill();
+  
+  ctx.fillStyle=col; ctx.fillText(s,x,y); 
+  ctx.restore();
 }
 
+// INCREASED SCALE COORDINATES
 function getCoords(p){
   const CW=canvas.width, CH=canvas.height;
-  // Fallback ratios for symbolic layout
-  const lR = p.allNum && p.L_m > 0 ? p.L_m : 2.35;
-  const dfR = p.allNum ? p.df_m : 1.386;
-  const scale = Math.min(CW,CH) * 0.55 / lR;
+  const lR = p.allNum && Math.abs(p.L_m) > 1e-6 ? p.L_m : 2.35;
+  
+  let dfR = p.allNum ? p.df_m : 1.386;
+  let drR = p.allNum ? p.dr_m : 0.964;
+  
+  // Handing visual fallbacks for extreme negative tipping cases so it doesn't draw off-screen
+  if(dfR < -1.5) dfR = -1.5; if(dfR > lR+1.5) dfR = lR+1.5;
+
+  // INCREASED SCALE HERE (0.75 instead of 0.55)
+  const scale = Math.min(CW,CH) * 0.75 / Math.abs(lR || 1);
   const span = lR * scale;
   
-  const By = CH * 0.65; // Ground level
+  // Shifted base down slightly to fit larger car
+  const By = CH * 0.75; 
   const Ax = CW/2 - span/2; // Front wheel
   const Bx = CW/2 + span/2; // Rear wheel
   const Gx = Ax + dfR * scale; // Center of Mass
-  const Gy = By - 60; // Arbitrary height for G
+  const Gy = By - 80; // Arbitrary height for G
   return {Ax, By, Bx, Gx, Gy, scale, CW, CH};
 }
 
 /* ══ FBD VIEW ══ */
 function drawFBD(p,t){
   bgFill(); const Th=TH(); const C = getCoords(p);
-  const t0=part(t,0,.15), t1=part(t,.1,.3), t2=part(t,.25,.5), t3=part(t,.4,.7);
+  // Staggered neat animation timing
+  const tGnd=part(t,0,.15), tCar=part(t,.1,.3), tPts=part(t,.25,.45), tDims=part(t,.4,.65), tForces=part(t,.6,1);
 
   // Ground
-  ctx.save();ctx.globalAlpha=t0;
-  ctx.fillStyle=Th.ground;ctx.fillRect(0,C.By+20,C.CW,C.CH);
-  ctx.strokeStyle=Th.gndL;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,C.By+20);ctx.lineTo(C.CW,C.By+20);ctx.stroke();
+  ctx.save();ctx.globalAlpha=tGnd;
+  ctx.fillStyle=Th.ground;ctx.fillRect(0,C.By+30,C.CW,C.CH);
+  ctx.strokeStyle=Th.gndL;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,C.By+30);ctx.lineTo(C.CW,C.By+30);ctx.stroke();
   ctx.restore();
 
   // Wheels
-  const wr=20;
+  const wr=26;
   [C.Ax, C.Bx].forEach((x, i) => {
-    ctx.save();ctx.globalAlpha=t0;
+    ctx.save();ctx.globalAlpha=tGnd;
     ctx.beginPath();ctx.arc(x,C.By,wr,0,Math.PI*2);ctx.fillStyle=Th.wheel;ctx.fill();
-    ctx.strokeStyle=Th.wheelR;ctx.lineWidth=3;ctx.stroke();
+    ctx.strokeStyle=Th.wheelR;ctx.lineWidth=4;ctx.stroke();
     ctx.restore();
   });
 
   // Car Body Abstraction
-  ctx.save();ctx.globalAlpha=ease(t1);
-  ctx.strokeStyle=Th.carLine;ctx.lineWidth=8;ctx.lineCap='round';ctx.shadowColor=Th.carLine;ctx.shadowBlur=10;
-  ctx.beginPath();ctx.moveTo(C.Ax,C.By);ctx.lineTo(C.Ax, C.Gy+20);ctx.lineTo(C.Bx, C.Gy+20);ctx.lineTo(C.Bx, C.By);ctx.stroke();
-  ctx.fillStyle=Th.carBody; ctx.globalAlpha=ease(t1)*0.6; ctx.shadowBlur=0;
-  ctx.beginPath();ctx.roundRect(C.Ax-30, C.Gy-20, (C.Bx-C.Ax)+60, 50, 15); ctx.fill();
+  ctx.save();ctx.globalAlpha=easeInOutQuad(tCar);
+  ctx.strokeStyle=Th.carLine;ctx.lineWidth=10;ctx.lineCap='round';ctx.shadowColor=Th.carLine;ctx.shadowBlur=15;
+  ctx.beginPath();ctx.moveTo(C.Ax,C.By);ctx.lineTo(C.Ax, C.Gy+25);ctx.lineTo(C.Bx, C.Gy+25);ctx.lineTo(C.Bx, C.By);ctx.stroke();
+  ctx.fillStyle=Th.carBody; ctx.globalAlpha=easeInOutQuad(tCar)*0.6; ctx.shadowBlur=0;
+  ctx.beginPath();ctx.roundRect(C.Ax-40, C.Gy-25, (C.Bx-C.Ax)+80, 65, 20); ctx.fill();
   ctx.restore();
 
   // Points
-  dot(C.Ax,C.By,Th.Nf,6,'A (Front)',t1, C.Ax-30, C.By-25);
-  dot(C.Bx,C.By,Th.Nr,6,'B (Rear)',t1, C.Bx+10, C.By-25);
-  dot(C.Gx,C.Gy,Th.weight,6,'G',t1, C.Gx+10, C.Gy-10);
-
-  // Forces
-  const fw=100;
-  arw(C.Ax,C.By, C.Ax, C.By-fw, Th.Nf, t2, 'N_f (Total Front)', C.Ax-110, C.By-fw+10);
-  arw(C.Bx,C.By, C.Bx, C.By-fw, Th.Nr, t2, 'N_r (Total Rear)', C.Bx+15, C.By-fw+10);
-  arw(C.Gx,C.Gy, C.Gx, C.Gy+fw, Th.weight, t2, 'W (Weight)', C.Gx+10, C.Gy+fw-5);
+  dot(C.Ax,C.By,Th.Nf,8,'A',tPts, C.Ax-20, C.By-35);
+  dot(C.Bx,C.By,Th.Nr,8,'B',tPts, C.Bx+15, C.By-35);
+  dot(C.Gx,C.Gy,Th.weight,8,'G',tPts, C.Gx+15, C.Gy-15);
 
   // Dimensions
-  dash(C.Ax,C.By+40, C.Gx,C.By+40, Th.dim, t3, [4,3], 2);
-  dash(C.Gx,C.By+40, C.Bx,C.By+40, Th.dim, t3, [4,3], 2);
-  if(t3>0.5){
-     const k=(t3-.5)/.5;
-     txt((C.Ax+C.Gx)/2, C.By+58, `d_f = ${p.allNum?fmt(p.df_m,3)+'m':p.sDF}`, Th.dim, 'bold 12px Space Mono,monospace', k, 'center');
-     txt((C.Gx+C.Bx)/2, C.By+58, `d_r = ${p.allNum?fmt(p.dr_m,3)+'m':p.sDR}`, Th.dim, 'bold 12px Space Mono,monospace', k, 'center');
+  dash(C.Ax,C.By+50, C.Gx,C.By+50, Th.dim, tDims, [5,4], 2.5);
+  dash(C.Gx,C.By+50, C.Bx,C.By+50, Th.dim, tDims, [5,4], 2.5);
+  if(tDims>0.6){
+     const k=(tDims-.6)/.4;
+     txtBox((C.Ax+C.Gx)/2, C.By+50, `d_f = ${p.allNum?fmt(p.df_m,3)+'m':p.sDF}`, Th.dim, 'bold 14px Space Mono', k, 'center');
+     txtBox((C.Gx+C.Bx)/2, C.By+50, `d_r = ${p.allNum?fmt(p.dr_m,3)+'m':p.sDR}`, Th.dim, 'bold 14px Space Mono', k, 'center');
   }
+
+  // Forces
+  const fw=140; // longer arrows
+  arw(C.Ax,C.By, C.Ax, C.By-fw, Th.Nf, tForces, 'N_f', C.Ax-40, C.By-fw+15, 4);
+  arw(C.Bx,C.By, C.Bx, C.By-fw, Th.Nr, tForces, 'N_r', C.Bx+20, C.By-fw+15, 4);
+  arw(C.Gx,C.Gy, C.Gx, C.Gy+fw, Th.weight, tForces, 'W', C.Gx+15, C.Gy+fw-10, 4);
 }
 
 /* ══ GEOMETRY VIEW ══ */
@@ -586,56 +628,58 @@ function drawGeom(p,t){
   const t0=part(t,0,.2), t1=part(t,.1,.4), t2=part(t,.3,.6), t3=part(t,.5,1);
 
   dash(0,C.By,C.CW,C.By,Th.gndL,t0,[10,6],1.5);
-  dot(C.Ax,C.By,Th.pt,5,'A',t1,C.Ax-15,C.By-10);
-  dot(C.Bx,C.By,Th.pt,5,'B',t1,C.Bx+10,C.By-10);
-  dot(C.Gx,C.Gy,Th.weight,5,'G',t1,C.Gx-5,C.Gy-15);
+  dot(C.Ax,C.By,Th.pt,7,'A (Front Axle)',t1,C.Ax-20,C.By-15);
+  dot(C.Bx,C.By,Th.pt,7,'B (Rear Axle)',t1,C.Bx+15,C.By-15);
+  dot(C.Gx,C.Gy,Th.weight,7,'G (Center of Mass)',t1,C.Gx-10,C.Gy-20);
 
   // Drop lines
-  dash(C.Gx, C.Gy, C.Gx, C.By, Th.muted, t2, [4,4], 1);
+  dash(C.Gx, C.Gy, C.Gx, C.By, Th.muted, t2, [6,5], 1.5);
 
   // Horizontal Dimensions
-  dash(C.Ax,C.By+30, C.Gx,C.By+30, Th.dim, t2, [5,4], 2);
-  dash(C.Gx,C.By+30, C.Bx,C.By+30, Th.dim, t2, [5,4], 2);
-  dash(C.Ax,C.By+70, C.Bx,C.By+70, Th.carLine, t3, [5,4], 2);
+  dash(C.Ax,C.By+40, C.Gx,C.By+40, Th.dim, t2, [6,5], 2.5);
+  dash(C.Gx,C.By+40, C.Bx,C.By+40, Th.dim, t2, [6,5], 2.5);
+  dash(C.Ax,C.By+90, C.Bx,C.By+90, Th.carLine, t3, [6,5], 2.5);
 
   if(t3>0.5){
     const k=(t3-.5)/.5;
-    txt((C.Ax+C.Gx)/2, C.By+48, `d_f = ${p.allNum?fmt(p.df_m,3)+'m':p.sDF}`, Th.dim, 'bold 13px Space Mono,monospace', k, 'center');
-    txt((C.Gx+C.Bx)/2, C.By+48, `d_r = ${p.allNum?fmt(p.dr_m,3)+'m':p.sDR}`, Th.dim, 'bold 13px Space Mono,monospace', k, 'center');
-    txt((C.Ax+C.Bx)/2, C.By+88, `L = ${p.allNum?fmt(p.L_m,3)+'m':p.sL}`, Th.carLine, 'bold 14px Space Mono,monospace', k, 'center');
+    txtBox((C.Ax+C.Gx)/2, C.By+40, `d_f = ${p.allNum?fmt(p.df_m,3)+'m':p.sDF}`, Th.dim, 'bold 15px Space Mono', k, 'center');
+    txtBox((C.Gx+C.Bx)/2, C.By+40, `d_r = ${p.allNum?fmt(p.dr_m,3)+'m':p.sDR}`, Th.dim, 'bold 15px Space Mono', k, 'center');
+    txtBox((C.Ax+C.Bx)/2, C.By+90, `Total Wheelbase L = ${p.allNum?fmt(p.L_m,3)+'m':p.sL}`, Th.carLine, 'bold 16px Space Mono', k, 'center');
   }
 }
 
 /* ══ MOMENTS VIEW ══ */
 function drawMoments(p,t){
   bgFill(); const Th=TH(); const C = getCoords(p);
-  const t0=part(t,0,.2), t1=part(t,.2,.5), t2=part(t,.4,.8);
+  const t0=part(t,0,.2), t1=part(t,.2,.5), t2=part(t,.5,.9);
 
-  dot(C.Ax,C.By,Th.pt,5,'Front Axle (A)',t0,C.Ax-40,C.By+20);
-  dot(C.Bx,C.By,Th.pt,5,'Rear Axle (B)',t0,C.Bx-30,C.By+20);
-  dot(C.Gx,C.Gy,Th.weight,5,'G',t0,C.Gx+10,C.Gy-5);
+  dot(C.Ax,C.By,Th.pt,6,'A',t0,C.Ax-25,C.By+25);
+  dot(C.Bx,C.By,Th.pt,6,'B',t0,C.Bx+15,C.By+25);
+  dot(C.Gx,C.Gy,Th.weight,6,'G',t0,C.Gx+15,C.Gy-10);
 
-  arw(C.Gx,C.Gy, C.Gx, C.Gy+90, Th.weight, t0, 'W', C.Gx+10, C.Gy+80);
+  arw(C.Gx,C.Gy, C.Gx, C.Gy+120, Th.weight, t0, 'W', C.Gx+15, C.Gy+110);
   
   // Moment about Rear Axle (B)
   if(t1>0){
-    dash(C.Gx, C.By, C.Bx, C.By, Th.weight, t1, [4,3], 2.5);
-    arw(C.Ax,C.By, C.Ax, C.By-90, Th.Nf, t1, 'N_f', C.Ax-30, C.By-80);
-    dash(C.Ax, C.By-15, C.Bx, C.By-15, Th.Nf, t1, [4,3], 2.5);
-    if(t1>0.5) {
-       txt((C.Gx+C.Bx)/2, C.By-5, `d_r`, Th.weight, 'bold 12px Space Mono', (t1-.5)/.5, 'center');
-       txt((C.Ax+C.Bx)/2, C.By-20, `L (Force Arm)`, Th.Nf, 'bold 12px Space Mono', (t1-.5)/.5, 'center');
+    dash(C.Gx, C.By, C.Bx, C.By, Th.weight, t1, [5,4], 3);
+    arw(C.Ax,C.By, C.Ax, C.By-120, Th.Nf, t1, 'N_f', C.Ax-40, C.By-110);
+    dash(C.Ax, C.By-20, C.Bx, C.By-20, Th.Nf, t1, [5,4], 3);
+    if(t1>0.6) {
+       const k = (t1-.6)/.4;
+       txtBox((C.Gx+C.Bx)/2, C.By, `d_r`, Th.weight, 'bold 14px Space Mono', k, 'center');
+       txtBox((C.Ax+C.Bx)/2, C.By-20, `L (Force Arm)`, Th.Nf, 'bold 14px Space Mono', k, 'center');
     }
   }
 
   // Moment about Front Axle (A)
   if(t2>0){
-    dash(C.Ax, C.By+15, C.Gx, C.By+15, Th.weight, t2, [4,3], 2.5);
-    arw(C.Bx,C.By, C.Bx, C.By-90, Th.Nr, t2, 'N_r', C.Bx+10, C.By-80);
-    dash(C.Ax, C.By-35, C.Bx, C.By-35, Th.Nr, t2, [4,3], 2.5);
-    if(t2>0.5) {
-       txt((C.Ax+C.Gx)/2, C.By+30, `d_f`, Th.weight, 'bold 12px Space Mono', (t2-.5)/.5, 'center');
-       txt((C.Ax+C.Bx)/2, C.By-45, `L (Force Arm)`, Th.Nr, 'bold 12px Space Mono', (t2-.5)/.5, 'center');
+    dash(C.Ax, C.By+20, C.Gx, C.By+20, Th.weight, t2, [5,4], 3);
+    arw(C.Bx,C.By, C.Bx, C.By-120, Th.Nr, t2, 'N_r', C.Bx+15, C.By-110);
+    dash(C.Ax, C.By-50, C.Bx, C.By-50, Th.Nr, t2, [5,4], 3);
+    if(t2>0.6) {
+       const k = (t2-.6)/.4;
+       txtBox((C.Ax+C.Gx)/2, C.By+20, `d_f`, Th.weight, 'bold 14px Space Mono', k, 'center');
+       txtBox((C.Ax+C.Bx)/2, C.By-50, `L (Force Arm)`, Th.Nr, 'bold 14px Space Mono', k, 'center');
     }
   }
 }
@@ -646,7 +690,7 @@ function animateTab(p,tab,sw=false){
   const badge=document.getElementById('statusBadge');
   function go(){
     badge.classList.add('on');
-    const dur=1800,start=performance.now();
+    const dur=2000,start=performance.now(); // Slightly longer for smoother read
     function frame(now){
       const t=Math.min((now-start)/dur,1);
       ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -664,8 +708,8 @@ function animateTab(p,tab,sw=false){
 function drawPlaceholder(){
   bgFill();const Th=TH();
   const cx=canvas.width/2,cy=canvas.height/2;
-  txt(cx,cy-16,'⚡ Enter values and click Solve & Animate',Th.text,'700 18px Space Grotesk,sans-serif',1,'center');
-  txt(cx,cy+14,'Numbers or symbols — 1400, m, $, anything goes',Th.muted,'13px Space Grotesk,sans-serif',1,'center');
+  txtBox(cx, cy-20, '⚡ Enter values and click Solve & Animate', Th.text, '700 20px Space Grotesk', 1, 'center');
+  txtBox(cx, cy+20, 'Numbers or symbols — 1400, -5, m, g, $, anything goes', Th.muted, '15px Space Grotesk', 1, 'center');
 }
 
 /* ══ BIND EVENTS ══ */
