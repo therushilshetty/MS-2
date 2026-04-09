@@ -3,110 +3,101 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>StaticsMaster · Car Equilibrium</title>
+<title>StaticsMaster · Car Equilibrium Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-/* ══ CORE THEME ══ */
 :root{
-  --bg:#07090f;--surface:#0d1117;--surface2:#111827;--surface3:#162033;
+  --bg:#07090f;--surface:#0d1117;--surface2:#111827;
   --border:rgba(56,189,248,.13);--divider:rgba(56,189,248,.07);
   --text:#e2eeff;--muted:#8ba3c9;--faint:#4a607e;
   --cyan:#38bdf8;--cyan-glow:rgba(56,189,248,.18);
   --violet:#a78bfa;--violet-glow:rgba(167,139,250,.15);
   --orange:#fb923c;--orange-glow:rgba(251,146,60,.15);
-  --green:#34d399;--green-glow:rgba(52,211,153,.14);
-  --rose:#fb7185;--rose-glow:rgba(251,113,133,.13);
-  --grid-line:rgba(56,189,248,.04);
+  --green:#34d399;--rose:#fb7185;
   --font:'Space Grotesk',sans-serif;--mono:'Space Mono',monospace;
-  --r-lg:20px;
 }
 [data-theme="light"]{
-  --bg:#f0f4fa;--surface:#fff;--surface2:#f5f9ff;--surface3:#eaf2ff;
-  --border:rgba(14,80,180,.10);--divider:rgba(14,80,180,.06);
-  --text:#0f172a;--muted:#4b6b96;--faint:#94a3b8;
-  --cyan:#0284c7;--cyan-glow:rgba(2,132,199,.10);
-  --violet:#7c3aed;--violet-glow:rgba(124,58,237,.10);
-  --orange:#ea580c;--orange-glow:rgba(234,88,12,.10);
-  --green:#059669;--green-glow:rgba(5,150,105,.10);
-  --rose:#e11d48;--rose-glow:rgba(225,29,72,.10);
-  --grid-line:rgba(14,80,180,.04);
+  --bg:#f8fafc;--surface:#ffffff;--surface2:#f1f5f9;
+  --border:rgba(15,23,42,.08);--divider:rgba(15,23,42,.05);
+  --text:#0f172a;--muted:#475569;--faint:#94a3b8;
+  --cyan:#0284c7;--violet:#7c3aed;--orange:#ea580c;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font);background:var(--bg);background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:40px 40px;color:var(--text);min-height:100vh;overflow-x:hidden}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 
-/* ══ LAYOUT ══ */
-.hdr{position:sticky;top:0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:0 24px;height:56px;background:color-mix(in srgb,var(--surface) 85%,transparent);border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}
-.brand{display:flex;align-items:center;gap:12px}.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:grid;place-items:center;font-family:var(--mono);font-size:12px;font-weight:700;color:#fff}
-.brand-name{font-size:15px;font-weight:700}.brand-sub{font-size:10px;color:var(--muted);font-family:var(--mono)}
-.layout{display:grid;grid-template-columns:355px 1fr;min-height:calc(100vh - 56px)}
-.sidebar{padding:16px;border-right:1px solid var(--border);background:color-mix(in srgb,var(--surface) 70%,transparent);display:flex;flex-direction:column;gap:12px;overflow-y:auto}
-.main-col{padding:16px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+.hdr{position:sticky;top:0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:0 24px;height:60px;background:color-mix(in srgb,var(--surface) 80%,transparent);border-bottom:1px solid var(--border);backdrop-filter:blur(12px)}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:grid;place-items:center;font-family:var(--mono);font-weight:700;color:#fff}
+.brand-name{font-size:16px;font-weight:700}
 
-/* ══ UI COMPONENTS ══ */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}.card-pad{padding:16px}
-.card-head{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px}
-.ibox{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:13px}
-.ib-cyan{background:var(--cyan-glow);color:var(--cyan);border:1px solid rgba(56,189,248,.25)}
-.ib-orange{background:var(--orange-glow);color:var(--orange);border:1px solid rgba(251,146,60,.25)}
-.ct{font-size:12px;font-weight:700}.cs{font-size:10px;color:var(--muted)}
-.field label{display:block;font-size:9px;font-weight:700;color:var(--muted);margin:8px 0 4px;text-transform:uppercase}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.iw input{width:100%;padding:8px 11px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-size:12px;color:var(--text)}
-.solve-btn{width:100%;padding:11px;border-radius:12px;font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--cyan),var(--violet));margin-top:12px;cursor:pointer}
-.errmsg{display:none;font-size:11px;color:var(--rose);background:rgba(251,113,133,0.1);padding:8px;border-radius:8px;margin-top:10px}
+.layout{display:grid;grid-template-columns:360px 1fr;min-height:calc(100vh - 60px)}
+.sidebar{padding:20px;border-right:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;gap:16px}
+.main-col{padding:20px;display:flex;flex-direction:column;gap:20px;background-image:radial-gradient(var(--border) 1px, transparent 1px);background-size:30px 30px}
 
-.rg{display:grid;grid-template-columns:1fr 1fr;gap:8px}.chip{padding:10px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);text-align:center}
-.ck{font-size:9px;font-weight:700;color:var(--faint);margin-bottom:4px}.cv{font-family:var(--mono);font-size:15px;font-weight:700}
-.canvas-zone{background:var(--bg);display:grid;place-items:center;padding:20px;min-height:500px}
-#fbdCanvas{border-radius:12px;width:100%;max-width:900px;background:var(--surface2);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
-.tabs{display:flex;gap:4px;background:var(--surface2);padding:4px;border-radius:10px}.tab{padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer}.tab.active{background:var(--surface);color:var(--text)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1)}
+.card-pad{padding:20px}
+.field label{display:block;font-size:10px;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.iw input{width:100%;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text);font-family:var(--mono);transition:0.2s}
+.iw input:focus{border-color:var(--cyan);outline:none;box-shadow:0 0 0 3px var(--cyan-glow)}
+
+.solve-btn{width:100%;padding:14px;border-radius:10px;font-size:14px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--cyan),var(--violet));cursor:pointer;border:none;transition:0.3s;margin-top:8px}
+.solve-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.errmsg{display:none;font-size:11px;color:var(--rose);background:rgba(251,113,133,0.1);padding:10px;border-radius:8px;margin-top:10px;border:1px solid rgba(251,113,133,0.2)}
+
+.tabs{display:flex;gap:4px;background:var(--surface2);padding:4px;border-radius:10px}.tab{flex:1;padding:8px;border-radius:7px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;text-align:center;transition:0.2s}.tab.active{background:var(--surface);color:var(--text);box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+
+#fbdCanvas{width:100%;height:auto;display:block;background:var(--surface2);border-radius:12px}
+.chip-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
+.chip{padding:12px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);text-align:center}
+.chip span{display:block;font-size:9px;color:var(--faint);font-weight:700;text-transform:uppercase}
+.chip b{font-family:var(--mono);font-size:16px;color:var(--text)}
 </style>
 </head>
 <body>
 
 <header class="hdr">
-  <div class="brand"><div class="logo">SM</div><div><div class="brand-name">StaticsMaster</div><div class="brand-sub">CAR SOLVER</div></div></div>
-  <button id="themeBtn" style="padding:8px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text); cursor:pointer">🌓 Theme Toggle</button>
+  <div class="brand"><div class="logo">SM</div><div class="brand-name">StaticsMaster <span style="font-weight:400; font-size:12px; color:var(--muted)">/ Car-01</span></div></div>
+  <button id="themeBtn" style="background:var(--surface2); border:1px solid var(--border); color:var(--text); padding:6px 12px; border-radius:8px; font-size:12px; cursor:pointer">🌓 Toggle Theme</button>
 </header>
 
 <div class="layout">
   <aside class="sidebar">
     <div class="card card-pad">
-      <div class="card-head"><div class="ibox ib-cyan">📐</div><div><div class="ct">Inputs</div><div class="cs">Physics & Geometry</div></div></div>
+      <div style="margin-bottom:15px"><h3 style="font-size:14px">Parameter Configuration</h3></div>
       <div class="field-row">
-        <div class="field"><label>Front → G (mm)</label><div class="iw"><input id="inp_df" value="1386"></div></div>
-        <div class="field"><label>G → Rear (mm)</label><div class="iw"><input id="inp_dr" value="964"></div></div>
+        <div class="field"><label>Front to G (mm)</label><div class="iw"><input id="inp_df" value="1386"></div></div>
+        <div class="field"><label>G to Rear (mm)</label><div class="iw"><input id="inp_dr" value="964"></div></div>
       </div>
       <div class="field-row">
         <div class="field"><label>Mass (kg)</label><div class="iw"><input id="inp_mass" value="1400"></div></div>
         <div class="field"><label>Gravity (m/s²)</label><div class="iw"><input id="inp_g" value="9.81"></div></div>
       </div>
-      <button class="solve-btn" id="solveBtn">⚡ Solve & Animate</button>
+      <button class="solve-btn" id="solveBtn">⚡ Calculate & View</button>
       <div class="errmsg" id="errMsg"></div>
     </div>
 
-    <div class="card card-pad" id="resultCard" style="display:none">
-      <div class="card-head"><div class="ibox ib-orange">✓</div><div><div class="ct">Results</div></div></div>
-      <div class="rg">
-        <div class="chip"><div class="ck">Weight (N)</div><div class="cv" id="r_W">—</div></div>
-        <div class="chip"><div class="ck">Front Nf (N)</div><div class="cv" id="r_Nf">—</div></div>
-        <div class="chip"><div class="ck">Rear Nr (N)</div><div class="cv" id="r_Nr">—</div></div>
-        <div class="chip"><div class="ck">Wheelbase (m)</div><div class="cv" id="r_L">—</div></div>
+    <div id="resCard" class="card card-pad" style="display:none">
+      <h3 style="font-size:12px; color:var(--green); margin-bottom:10px">● Calculated Equilibrium</h3>
+      <div class="chip-grid">
+        <div class="chip"><span>Weight (W)</span><b id="r_W">-</b></div>
+        <div class="chip"><span>Wheelbase (L)</span><b id="r_L">-</b></div>
+        <div class="chip"><span>Normal Front</span><b id="r_Nf">-</b></div>
+        <div class="chip"><span>Normal Rear</span><b id="r_Nr">-</b></div>
       </div>
     </div>
   </aside>
 
   <main class="main-col">
-    <section class="card">
-      <div class="hdr" style="border:none; background:none">
-        <div class="ct">Visual Model</div>
-        <div class="tabs">
-          <div class="tab active" data-tab="fbd">Equilibrium</div>
+    <div class="card">
+      <div style="padding:12px 20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border)">
+        <span style="font-size:13px; font-weight:600">Schematic Visualization</span>
+        <div class="tabs" style="width:240px">
+          <div class="tab active" data-tab="fbd">Forces (FBD)</div>
           <div class="tab" data-tab="geom">Dimensions</div>
         </div>
       </div>
-      <div class="canvas-zone"><canvas id="fbdCanvas" width="1800" height="1000"></canvas></div>
-    </section>
+      <div style="padding:20px"><canvas id="fbdCanvas" width="1800" height="1000"></canvas></div>
+    </div>
   </main>
 </div>
 
@@ -125,98 +116,93 @@ function compute() {
   const err = document.getElementById('errMsg');
   err.style.display = 'none';
 
-  // Loopholes Fix: Boundary validation
   if (m < 0 || g < 0 || df_mm < 0 || dr_mm < 0) {
     err.textContent = "Error: Input values cannot be negative.";
     err.style.display = 'block'; return null;
   }
-
   const df = df_mm / 1000, dr = dr_mm / 1000, L = df + dr;
-  
-  if (L <= 0) {
-    err.textContent = "Error: Total wheelbase must be greater than zero.";
-    err.style.display = 'block'; return null;
-  }
+  if (L <= 0) { err.textContent = "Error: Invalid geometry."; err.style.display = 'block'; return null; }
 
-  const W = m * g, Nf = (W * dr) / L, Nr = (W * df) / L;
-  return { df, dr, L, W, Nf, Nr };
+  return { df, dr, L, W: m * g, Nf: (m*g*dr)/L, Nr: (m*g*df)/L };
 }
 
 function draw(p, t, mode) {
-  const th = dark ? {bg:'#0d1117', car:'#38bdf8', text:'#e2eeff', forceFront:'#34d399', forceRear:'#fbbf24', weight:'#fb7185', dim:'#a78bfa'} 
-                  : {bg:'#ffffff', car:'#0284c7', text:'#0f172a', forceFront:'#059669', forceRear:'#d97706', weight:'#e11d48', dim:'#7c3aed'};
+  const th = dark ? {bg:'#0d1117', car:'#38bdf8', text:'#e2eeff', Nf:'#34d399', Nr:'#fbbf24', W:'#fb7185', dim:'#a78bfa'} 
+                  : {bg:'#ffffff', car:'#0284c7', text:'#0f172a', Nf:'#059669', Nr:'#d97706', W:'#e11d48', dim:'#7c3aed'};
   
   ctx.clearRect(0,0,1800,1000);
   ctx.fillStyle = th.bg; ctx.fillRect(0,0,1800,1000);
 
-  const Ax = 500, Bx = 1300, groundY = 750;
+  const Ax = 500, Bx = 1300, groundY = 650;
   const Gx = Ax + (p.df / p.L) * (Bx - Ax);
 
-  // Ground Line
-  ctx.strokeStyle = th.text + '20'; ctx.lineWidth = 4;
-  ctx.beginPath(); ctx.moveTo(100, groundY); ctx.lineTo(1700, groundY); ctx.stroke();
+  // Reference Lines (Vertical Dotted)
+  ctx.setLineDash([8, 8]); ctx.strokeStyle = th.text + '25'; ctx.lineWidth = 2;
+  [Ax, Gx, Bx].forEach(x => { ctx.beginPath(); ctx.moveTo(x, groundY - 350); ctx.lineTo(x, groundY + 250); ctx.stroke(); });
+  ctx.setLineDash([]);
 
-  // Car Body Rendering
-  ctx.fillStyle = th.car + '15';
-  ctx.roundRect(Ax-200, groundY-300, (Bx-Ax)+400, 240, 50); ctx.fill();
-  ctx.strokeStyle = th.car; ctx.lineWidth = 6; ctx.stroke();
+  // Ground Line
+  ctx.strokeStyle = th.text + '30'; ctx.lineWidth = 6;
+  ctx.beginPath(); ctx.moveTo(150, groundY); ctx.lineTo(1650, groundY); ctx.stroke();
+
+  // Car Body
+  ctx.fillStyle = th.car + '15'; ctx.roundRect(Ax-180, groundY-280, (Bx-Ax)+360, 220, 40); ctx.fill();
+  ctx.strokeStyle = th.car; ctx.lineWidth = 5; ctx.stroke();
 
   if (mode === 'fbd') {
-    arrow(Gx, groundY-180, Gx, groundY+150, th.weight, t, "W = " + p.W.toFixed(0) + "N");
-    arrow(Ax, groundY, Ax, groundY-350, th.forceFront, t, "Nf = " + p.Nf.toFixed(0) + "N");
-    arrow(Bx, groundY, Bx, groundY-350, th.forceRear, t, "Nr = " + p.Nr.toFixed(0) + "N");
+    arrow(Gx, groundY-170, Gx, groundY+180, th.W, t, `W: ${p.W.toFixed(0)}N`);
+    arrow(Ax, groundY, Ax, groundY-380, th.Nf, t, `Nf: ${p.Nf.toFixed(0)}N`);
+    arrow(Bx, groundY, Bx, groundY-380, th.Nr, t, `Nr: ${p.Nr.toFixed(0)}N`);
   } else {
-    // Neat Dimension Labels Fix
-    const dimY = groundY + 120;
-    
-    ctx.strokeStyle = th.dim; ctx.lineWidth = 2; ctx.setLineDash([8, 8]);
-    [Ax, Gx, Bx].forEach(x => {
-      ctx.beginPath(); ctx.moveTo(x, groundY); ctx.lineTo(x, dimY + 40); ctx.stroke();
-    });
+    // NEAT DIMENSIONS - TIERED SYSTEM
+    const tier1 = groundY + 80;  // Individual offsets
+    const tier2 = groundY + 180; // Total Wheelbase
 
-    ctx.setLineDash([]);
-    drawDimLine(Ax, Gx, dimY, `df: ${(p.df*1000).toFixed(0)}mm`, th.dim);
-    drawDimLine(Gx, Bx, dimY, `dr: ${(p.dr*1000).toFixed(0)}mm`, th.dim);
+    // df dimension
+    dimLine(Ax, Gx, tier1, `df = ${(p.df*1000).toFixed(0)}mm`, th.dim);
+    // dr dimension
+    dimLine(Gx, Bx, tier1, `dr = ${(p.dr*1000).toFixed(0)}mm`, th.dim);
+    // Total L dimension (placed lower to avoid overlap)
+    dimLine(Ax, Bx, tier2, `Total L = ${(p.L*1000).toFixed(0)}mm`, th.cyan);
   }
 }
 
-function drawDimLine(x1, x2, y, label, color) {
-  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 3;
-  ctx.beginPath(); ctx.moveTo(x1, y); ctx.lineTo(x2, y); ctx.stroke();
-  
-  // Clean Arrowheads
-  ctx.beginPath(); ctx.moveTo(x1+15, y-10); ctx.lineTo(x1, y); ctx.lineTo(x1+15, y+10); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(x2-15, y-10); ctx.lineTo(x2, y); ctx.lineTo(x2-15, y+10); ctx.stroke();
-  
-  // Neat Centered Label
-  ctx.font = "bold 32px Space Mono"; ctx.textAlign = "center";
+function dimLine(x1, x2, y, label, col) {
+  ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 3;
+  // Main horizontal line
+  ctx.beginPath(); ctx.moveTo(x1+5, y); ctx.lineTo(x2-5, y); ctx.stroke();
+  // Arrow heads
+  ctx.beginPath(); ctx.moveTo(x1+20, y-10); ctx.lineTo(x1, y); ctx.lineTo(x1+20, y+10); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x2-20, y-10); ctx.lineTo(x2, y); ctx.lineTo(x2-20, y+10); ctx.stroke();
+  // Centered Label
+  ctx.font = "bold 28px Space Mono"; ctx.textAlign = "center";
   ctx.fillText(label, (x1+x2)/2, y - 20);
 }
 
-function arrow(x1, y1, x2, y2, color, t, label) {
-  const curX = x1 + (x2-x1)*t, curY = y1 + (y2-y1)*t;
-  ctx.strokeStyle = color; ctx.lineWidth = 8;
-  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(curX, curY); ctx.stroke();
-  if (t > 0.9) {
-    ctx.fillStyle = color; ctx.font = "bold 34px Space Mono"; ctx.textAlign = "left";
-    ctx.fillText(label, curX + 30, curY);
-    ctx.beginPath(); ctx.arc(curX, curY, 12, 0, Math.PI*2); ctx.fill();
+function arrow(x1, y1, x2, y2, col, t, lbl) {
+  const cx = x1 + (x2-x1)*t, cy = y1 + (y2-y1)*t;
+  ctx.strokeStyle = col; ctx.lineWidth = 8; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(cx, cy); ctx.stroke();
+  if (t > 0.95) {
+    ctx.fillStyle = col; ctx.beginPath(); ctx.arc(cx, cy, 12, 0, 7); ctx.fill();
+    ctx.font = "bold 32px Space Mono"; ctx.textAlign = "left";
+    ctx.fillText(lbl, cx + 25, cy + 10);
   }
 }
 
 let anim;
 document.getElementById('solveBtn').onclick = () => {
   const p = compute(); if (!p) return;
-  document.getElementById('resultCard').style.display = 'block';
-  document.getElementById('r_W').textContent = p.W.toFixed(1);
-  document.getElementById('r_Nf').textContent = p.Nf.toFixed(1);
-  document.getElementById('r_Nr').textContent = p.Nr.toFixed(1);
-  document.getElementById('r_L').textContent = p.L.toFixed(3);
+  document.getElementById('resCard').style.display = 'block';
+  document.getElementById('r_W').textContent = p.W.toFixed(0) + ' N';
+  document.getElementById('r_L').textContent = p.L.toFixed(3) + ' m';
+  document.getElementById('r_Nf').textContent = p.Nf.toFixed(1) + ' N';
+  document.getElementById('r_Nr').textContent = p.Nr.toFixed(1) + ' N';
 
   let start = null;
   const step = (now) => {
     if (!start) start = now;
-    const t = Math.min(1, (now - start) / 800);
+    const t = Math.min(1, (now - start) / 700);
     draw(p, t, document.querySelector('.tab.active').dataset.tab);
     if (t < 1) anim = requestAnimationFrame(step);
   };
@@ -232,8 +218,7 @@ document.querySelectorAll('.tab').forEach(tab => {
 });
 
 document.getElementById('themeBtn').onclick = () => {
-  dark = !dark;
-  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  dark = !dark; document.documentElement.setAttribute('data-theme', dark?'dark':'light');
   const p = compute(); if(p) draw(p, 1, document.querySelector('.tab.active').dataset.tab);
 };
 </script>
