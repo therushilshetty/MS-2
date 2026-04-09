@@ -1,232 +1,686 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>StaticsMaster · Classic Edition</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-<style>
-:root {
-    --bg: #0b0e14; --panel: #141a23; --card: #1c252e;
-    --border: #2d3846; --accent: #7c5dfa; --text: #e2eeff;
-    --muted: #94a3b8; --cyan: #38bdf8; --green: #34d399;
-    --orange: #fbbf24; --rose: #fb7185; --font: 'Inter', sans-serif;
-    --mono: 'JetBrains Mono', monospace;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { 
-    background-color: var(--bg); color: var(--text); font-family: var(--font);
-    background-image: radial-gradient(circle, #1e293b 1px, transparent 1px);
-    background-size: 30px 30px; min-height: 100vh;
-}
-.hdr { 
-    height: 60px; border-bottom: 1px solid var(--border); 
-    display: flex; align-items: center; padding: 0 30px; justify-content: space-between;
-}
-.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -0.5px; }
-.logo-box { background: var(--cyan); color: #000; padding: 4px 8px; border-radius: 6px; font-size: 14px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StaticsMaster | Professional Engineering Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* ═══ GLOBAL RESET & THEME ═══ */
+        :root {
+            --bg: #0b0f1a;
+            --panel: #111827;
+            --card: #1f2937;
+            --card-hover: #374151;
+            --border: rgba(255, 255, 255, 0.08);
+            --accent-primary: #7c3aed;
+            --accent-secondary: #3b82f6;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --cyan: #06b6d4;
+            --cyan-glow: rgba(6, 182, 212, 0.3);
+            --emerald: #10b981;
+            --rose: #f43f5e;
+            --amber: #f59e0b;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
 
-.main-layout { display: grid; grid-template-columns: 380px 1fr; height: calc(100vh - 60px); }
-.sidebar { padding: 20px; border-right: 1px solid var(--border); overflow-y: auto; background: rgba(20,26,35,0.8); }
-.content { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
 
-/* Classic Input Cards */
-.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-.card-h { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--muted); margin-bottom: 15px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
-.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-.field label { display: block; font-size: 10px; margin-bottom: 5px; color: var(--muted); }
-.iw input { width: 100%; background: var(--panel); border: 1px solid var(--border); padding: 10px; border-radius: 8px; color: var(--text); font-family: var(--mono); font-size: 13px; }
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-.solve-btn { 
-    width: 100%; padding: 15px; border-radius: 10px; border: none; 
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: white; font-weight: 700; cursor: pointer; transition: 0.2s;
-}
-.solve-btn:hover { filter: brightness(1.1); transform: scale(1.01); }
+        /* ═══ HEADER ═══ */
+        header {
+            height: 64px;
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            justify-content: space-between;
+            z-index: 100;
+        }
 
-/* Results Grid */
-.res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.res-item { background: var(--panel); border: 1px solid var(--border); padding: 12px; border-radius: 10px; text-align: center; }
-.res-item span { font-size: 9px; color: var(--muted); display: block; text-transform: uppercase; margin-bottom: 4px; }
-.res-item b { font-family: var(--mono); font-size: 16px; }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-/* Canvas Controls */
-.canvas-container { position: relative; background: #0f172a; border-radius: 16px; border: 1px solid var(--border); overflow: hidden; flex-grow: 1; }
-.canvas-hdr { padding: 15px 25px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(15,23,42,0.5); }
-.tabs { display: flex; gap: 5px; background: #1e293b; padding: 4px; border-radius: 8px; }
-.tab { padding: 6px 12px; font-size: 11px; font-weight: 600; color: var(--muted); cursor: pointer; border-radius: 6px; }
-.tab.active { background: #334155; color: white; }
-canvas { width: 100%; height: auto; display: block; }
-</style>
+        .logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--cyan), var(--accent-primary));
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            font-weight: 800;
+            color: white;
+            font-size: 14px;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-tag {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .nav-tools {
+            display: flex;
+            gap: 8px;
+        }
+
+        .tool-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .tool-btn.active {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        /* ═══ MAIN LAYOUT ═══ */
+        main {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        /* ═══ SIDEBAR ═══ */
+        .sidebar {
+            background: var(--panel);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .input-group {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .group-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .group-title i { color: var(--cyan); }
+
+        .field-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 2px var(--cyan-glow);
+        }
+
+        .solve-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 8px;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+            transition: 0.2s;
+        }
+
+        .solve-btn:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.1);
+        }
+
+        /* ═══ RESULTS SECTION ═══ */
+        .results-panel {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .res-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .res-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .res-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .res-box label {
+            display: block;
+            font-size: 9px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .res-box value {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--emerald);
+        }
+
+        /* ═══ CANVAS AREA ═══ */
+        .canvas-area {
+            position: relative;
+            background: #0d1117;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .canvas-toolbar {
+            height: 60px;
+            background: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 10;
+        }
+
+        .view-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px;
+            border-radius: 10px;
+        }
+
+        .tab {
+            padding: 6px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .tab.active {
+            background: var(--card);
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        canvas {
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ═══ SOLUTION FOOTER ═══ */
+        .solution-footer {
+            height: 200px;
+            background: var(--panel);
+            border-top: 1px solid var(--border);
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .step-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--text-muted);
+            align-items: flex-start;
+        }
+
+        .step-num {
+            width: 24px;
+            height: 24px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+
+        .math {
+            font-family: var(--font-mono);
+            color: var(--cyan);
+            background: rgba(6, 182, 212, 0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
 
-<header class="hdr">
-    <div class="brand"><div class="logo-box">SM</div> StaticsMaster <span style="font-weight:400; opacity:0.6; font-size:12px; margin-left:10px">CAR · CENTER OF MASS</span></div>
-    <div style="font-size:12px; color:var(--muted)">STATICS · NUMERIC</div>
+<header>
+    <div class="brand">
+        <div class="logo">SM</div>
+        <div class="brand-text">
+            <span class="brand-name">StaticsMaster Pro</span>
+            <span class="brand-tag">Engineering Analysis v4.2</span>
+        </div>
+    </div>
+    <div class="nav-tools">
+        <button class="tool-btn active">NUMERIC</button>
+        <button class="tool-btn">SYMBOLIC</button>
+        <button class="tool-btn">EXPORT</button>
+    </div>
 </header>
 
-<div class="main-layout">
+<main>
     <aside class="sidebar">
-        <div class="card">
-            <div class="card-h">📐 Inputs — Numbers OR Any Symbol</div>
-            <div class="field-row">
-                <div class="field"><label>Front Axle → G (mm)</label><div class="iw"><input id="i_df" value="1386"></div></div>
-                <div class="field"><label>G → Rear Axle (mm)</label><div class="iw"><input id="i_dr" value="964"></div></div>
+        <div class="input-group">
+            <div class="group-title"><span>📐</span> Geometry (Axles to Center)</div>
+            <div class="field-grid">
+                <div class="field">
+                    <label>Front Axle → G</label>
+                    <div class="input-wrapper">
+                        <input id="in_df" value="1386" placeholder="mm">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>G → Rear Axle</label>
+                    <div class="input-wrapper">
+                        <input id="in_dr" value="964" placeholder="mm">
+                    </div>
+                </div>
             </div>
-            <div class="field-row">
-                <div class="field"><label>Total Mass (kg)</label><div class="iw"><input id="i_m" value="1400"></div></div>
-                <div class="field"><label>Gravity (m/s²)</label><div class="iw"><input id="i_g" value="9.81"></div></div>
+            <div class="group-title"><span>⚖️</span> Load / Physics</div>
+            <div class="field-grid">
+                <div class="field">
+                    <label>Total Mass (kg)</label>
+                    <div class="input-wrapper">
+                        <input id="in_m" value="1400">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Gravity (m/s²)</label>
+                    <div class="input-wrapper">
+                        <input id="in_g" value="9.81">
+                    </div>
+                </div>
             </div>
-            <button class="solve-btn" onclick="run()">⚡ Solve & Animate</button>
+            <button class="solve-btn" onclick="calculate()">🚀 Solve & Animate</button>
         </div>
 
-        <div class="card" id="res_panel" style="display:none">
-            <div class="card-h">✅ Results</div>
-            <div class="res-grid">
-                <div class="res-item"><span>Weight W</span><b id="r_W">-</b></div>
-                <div class="res-item"><span>Wheelbase L</span><b id="r_L">-</b></div>
-                <div class="res-item"><span>Total Front Nf</span><b id="r_Nf">-</b></div>
-                <div class="res-item"><span>Total Rear Nr</span><b id="r_Nr">-</b></div>
+        <div id="resultsPanel" class="results-panel">
+            <div class="res-card">
+                <div class="group-title"><span>📊</span> Statics Analysis</div>
+                <div class="res-grid">
+                    <div class="res-box">
+                        <label>Weight (W)</label>
+                        <value id="res_W">-</value>
+                    </div>
+                    <div class="res-box">
+                        <label>Wheelbase (L)</label>
+                        <value id="res_L">-</value>
+                    </div>
+                    <div class="res-box">
+                        <label>Front Reaction (Nf)</label>
+                        <value id="res_Nf">-</value>
+                    </div>
+                    <div class="res-box">
+                        <label>Rear Reaction (Nr)</label>
+                        <value id="res_Nr">-</value>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="res-card">
+                <div class="group-title"><span>🛞</span> Force Per Tire</div>
+                <div class="res-grid">
+                    <div class="res-box">
+                        <label>Front Single</label>
+                        <value id="res_f_tire" style="color: var(--cyan)">-</value>
+                    </div>
+                    <div class="res-box">
+                        <label>Rear Single</label>
+                        <value id="res_r_tire" style="color: var(--amber)">-</value>
+                    </div>
+                </div>
             </div>
         </div>
     </aside>
 
-    <main class="content">
-        <div class="canvas-container">
-            <div class="canvas-hdr">
-                <div><b style="font-size:14px">Free Body Diagram</b><br><span style="font-size:10px; color:var(--muted)">Animated · Symbolic + Numeric Output</span></div>
-                <div class="tabs">
-                    <div class="tab active" onclick="setMode('fbd', this)">Full FBD</div>
-                    <div class="tab" onclick="setMode('geom', this)">Geometry</div>
-                    <div class="tab" onclick="setMode('mom', this)">Moments</div>
-                </div>
+    <div class="canvas-area">
+        <div class="canvas-toolbar">
+            <div style="display: flex; flex-direction: column;">
+                <span style="font-size: 13px; font-weight: 700;">Free Body Diagram</span>
+                <span style="font-size: 10px; color: var(--text-muted);">Real-time Force Equilibrium</span>
             </div>
-            <canvas id="stage" width="1600" height="900"></canvas>
-        </div>
-        
-        <div class="card" style="margin:0">
-            <div class="card-h">📝 Step-by-Step Solution</div>
-            <div style="font-size:13px; color:var(--muted); line-height:1.6">
-                1. Calculate Weight: $W = m \cdot g$<br>
-                2. Identify Wheelbase: $L = d_f + d_r$<br>
-                3. Apply $\sum M = 0$ at axles to find reactions.
+            <div class="view-tabs">
+                <div class="tab active" onclick="setView('fbd', this)">Full FBD</div>
+                <div class="tab" onclick="setView('geom', this)">Geometry</div>
+                <div class="tab" onclick="setView('moments', this)">Moments</div>
             </div>
         </div>
-    </main>
-</div>
+        <canvas id="mainCanvas"></canvas>
+        <div class="solution-footer">
+            <div class="group-title"><span>📝</span> Step-by-Step Solution</div>
+            <ul class="step-list" id="stepList">
+                <li class="step-item"><div class="step-num">1</div> <div>Calculate total gravitational force (Weight) acting at Center G: <span class="math">W = m × g</span></div></li>
+                <li class="step-item"><div class="step-num">2</div> <div>Define total wheelbase as sum of segments: <span class="math">L = df + dr</span></div></li>
+                <li class="step-item"><div class="step-num">3</div> <div>Sum moments about Rear Axle (B) to find Front Reaction: <span class="math">ΣM_B = 0 → Nf = (W × dr) / L</span></div></li>
+                <li class="step-item"><div class="step-num">4</div> <div>Sum moments about Front Axle (A) to find Rear Reaction: <span class="math">ΣM_A = 0 → Nr = (W × df) / L</span></div></li>
+            </ul>
+        </div>
+    </div>
+</main>
 
 <script>
-const canvas = document.getElementById('stage');
-const ctx = canvas.getContext('2d');
-let mode = 'fbd';
-let currentParams = null;
+    const canvas = document.getElementById('mainCanvas');
+    const ctx = canvas.getContext('2d');
+    let viewMode = 'fbd';
+    let data = null;
 
-function setMode(m, el) {
-    mode = m;
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    el.classList.add('active');
-    if(currentParams) draw(currentParams, 1);
-}
-
-function run() {
-    const df = parseFloat(document.getElementById('i_df').value);
-    const dr = parseFloat(document.getElementById('i_dr').value);
-    const m = parseFloat(document.getElementById('i_m').value);
-    const g = parseFloat(document.getElementById('i_g').value);
-
-    const L = (df + dr) / 1000;
-    const W = m * g;
-    const Nf = (W * (dr/1000)) / L;
-    const Nr = (W * (df/1000)) / L;
-
-    currentParams = { df: df/1000, dr: dr/1000, L, W, Nf, Nr };
-    
-    document.getElementById('res_panel').style.display = 'block';
-    document.getElementById('r_W').innerText = W.toFixed(1) + ' N';
-    document.getElementById('r_L').innerText = L.toFixed(3) + ' m';
-    document.getElementById('r_Nf').innerText = Nf.toFixed(1) + ' N';
-    document.getElementById('r_Nr').innerText = Nr.toFixed(1) + ' N';
-
-    let start = null;
-    function anim(now) {
-        if(!start) start = now;
-        let t = Math.min(1, (now-start)/800);
-        draw(currentParams, t);
-        if(t < 1) requestAnimationFrame(anim);
+    function resize() {
+        canvas.width = canvas.clientWidth * window.devicePixelRatio;
+        canvas.height = canvas.clientHeight * window.devicePixelRatio;
+        if(data) draw(1);
     }
-    requestAnimationFrame(anim);
-}
+    window.addEventListener('resize', resize);
+    setTimeout(resize, 100);
 
-function draw(p, t) {
-    ctx.clearRect(0, 0, 1600, 900);
-    const groundY = 650;
-    const Ax = 450, Bx = 1150;
-    const Gx = Ax + (p.df / p.L) * (Bx - Ax);
+    function setView(m, el) {
+        viewMode = m;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        if(data) draw(1);
+    }
 
-    // Dotted Reference Lines
-    ctx.setLineDash([10, 10]); ctx.strokeStyle = '#ffffff22'; ctx.lineWidth = 2;
-    [Ax, Gx, Bx].forEach(x => {
-        ctx.beginPath(); ctx.moveTo(x, groundY - 300); ctx.lineTo(x, groundY + 400); ctx.stroke();
-    });
-    ctx.setLineDash([]);
+    function calculate() {
+        const df = parseFloat(document.getElementById('in_df').value) || 0;
+        const dr = parseFloat(document.getElementById('in_dr').value) || 0;
+        const m = parseFloat(document.getElementById('in_m').value) || 0;
+        const g = parseFloat(document.getElementById('in_g').value) || 0;
 
-    // Car Chassis (Classic Glow)
-    ctx.shadowBlur = 15; ctx.shadowColor = '#38bdf844';
-    ctx.fillStyle = '#1e293b'; ctx.beginPath();
-    ctx.roundRect(Ax - 150, groundY - 220, (Bx - Ax) + 300, 140, 40); ctx.fill();
-    ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 4; ctx.stroke();
-    ctx.shadowBlur = 0;
-
-    // Classic Wheels
-    [Ax, Bx].forEach(x => {
-        ctx.beginPath(); ctx.arc(x, groundY - 40, 50, 0, Math.PI*2);
-        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 8; ctx.stroke();
-        ctx.fillStyle = '#0f172a'; ctx.fill();
-    });
-
-    // Tiered Dimension Lines (NEAT & CLEAR FIX)
-    if(mode === 'geom') {
-        const d_y = groundY + 120; // Tier 1 for df/dr
-        const L_y = groundY + 250; // Tier 2 for L
+        const L_m = (df + dr) / 1000;
+        const W_n = m * g;
         
-        // Extension lines
-        ctx.strokeStyle = '#a78bfa'; ctx.lineWidth = 2;
+        if(L_m <= 0) return;
+
+        data = {
+            df_m: df / 1000,
+            dr_m: dr / 1000,
+            L: L_m,
+            W: W_n,
+            Nf: (W_n * (dr / 1000)) / L_m,
+            Nr: (W_n * (df / 1000)) / L_m
+        };
+
+        // Update Dashboard
+        document.getElementById('resultsPanel').style.display = 'flex';
+        document.getElementById('res_W').textContent = data.W.toFixed(1) + ' N';
+        document.getElementById('res_L').textContent = data.L.toFixed(3) + ' m';
+        document.getElementById('res_Nf').textContent = data.Nf.toFixed(1) + ' N';
+        document.getElementById('res_Nr').textContent = data.Nr.toFixed(1) + ' N';
+        document.getElementById('res_f_tire').textContent = (data.Nf/2).toFixed(1) + ' N';
+        document.getElementById('res_r_tire').textContent = (data.Nr/2).toFixed(1) + ' N';
+
+        animate();
+    }
+
+    function animate() {
+        let start = null;
+        function step(now) {
+            if(!start) start = now;
+            let progress = Math.min(1, (now - start) / 1000);
+            draw(progress);
+            if(progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+
+    function draw(progress) {
+        if(!data) return;
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.clearRect(0,0,w,h);
+
+        const groundY = h * 0.7;
+        const centerX = w / 2;
+        const visualL = w * 0.5;
+        
+        const Ax = centerX - (visualL/2);
+        const Bx = centerX + (visualL/2);
+        const ratio = data.df_m / data.L;
+        const Gx = Ax + (visualL * ratio);
+
+        // 1. DOTTED REFERENCE LINES
+        ctx.setLineDash([10, 10]);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.lineWidth = 2;
         [Ax, Gx, Bx].forEach(x => {
-            ctx.beginPath(); ctx.moveTo(x, groundY + 20); ctx.lineTo(x, L_y + 40); ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, groundY - h*0.3);
+            ctx.lineTo(x, groundY + h*0.25);
+            ctx.stroke();
+        });
+        ctx.setLineDash([]);
+
+        // 2. CHASSIS
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = 'rgba(6, 182, 212, 0.2)';
+        ctx.fillStyle = '#1e293b';
+        ctx.beginPath();
+        ctx.roundRect(Ax - 150, groundY - 240, visualL + 300, 150, 40);
+        ctx.fill();
+        ctx.strokeStyle = '#06b6d4';
+        ctx.lineWidth = 4;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // 3. WHEELS
+        [Ax, Bx].forEach(x => {
+            ctx.beginPath();
+            ctx.arc(x, groundY - 50, 60, 0, Math.PI*2);
+            ctx.fillStyle = '#0f172a';
+            ctx.fill();
+            ctx.strokeStyle = '#06b6d4';
+            ctx.lineWidth = 8;
+            ctx.stroke();
+            
+            // Hub cap
+            ctx.beginPath();
+            ctx.arc(x, groundY - 50, 15, 0, Math.PI*2);
+            ctx.fillStyle = '#334155';
+            ctx.fill();
         });
 
-        drawDim(Ax, Gx, d_y, `df = ${(p.df*1000).toFixed(0)}mm`, '#a78bfa');
-        drawDim(Gx, Bx, d_y, `dr = ${(p.dr*1000).toFixed(0)}mm`, '#a78bfa');
-        drawDim(Ax, Bx, L_y, `Wheelbase L = ${(p.L*1000).toFixed(0)}mm`, '#38bdf8');
+        // 4. FORCES (FBD MODE)
+        if(viewMode === 'fbd' || viewMode === 'moments') {
+            const arrowLen = 220 * progress;
+            // Weight
+            drawArrow(Gx, groundY - 120, Gx, groundY - 120 + arrowLen, '#f43f5e', "W", "G");
+            // Reactions
+            drawArrow(Ax, groundY, Ax, groundY - arrowLen, '#10b981', "Nf", "A");
+            drawArrow(Bx, groundY, Bx, groundY - arrowLen, '#f59e0b', "Nr", "B");
+        }
+
+        // 5. DIMENSIONS (GEOMETRY MODE - NEAT & CLEAR TIERED SYSTEM)
+        if(viewMode === 'geom') {
+            const tier1Y = groundY + 120; // Level for df and dr
+            const tier2Y = groundY + 280; // Level for total Wheelbase L
+
+            // Extension Drop-Lines
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.lineWidth = 1.5;
+            [Ax, Gx, Bx].forEach(x => {
+                ctx.beginPath();
+                ctx.moveTo(x, groundY + 20);
+                ctx.lineTo(x, tier2Y + 40);
+                ctx.stroke();
+            });
+
+            // df arrow
+            drawDim(Ax, Gx, tier1Y, `df: ${(data.df_m * 1000).toFixed(0)}mm`, '#a78bfa');
+            // dr arrow
+            drawDim(Gx, Bx, tier1Y, `dr: ${(data.dr_m * 1000).toFixed(0)}mm`, '#a78bfa');
+            // total L arrow (Lower Tier)
+            drawDim(Ax, Bx, tier2Y, `Wheelbase L: ${data.L.toFixed(3)}m`, '#06b6d4');
+        }
     }
 
-    // Vectors
-    if(mode === 'fbd' || mode === 'mom') {
-        arrow(Gx, groundY-100, Gx, groundY + 180*t, '#fb7185', "W", "G");
-        arrow(Ax, groundY, Ax, groundY - 300*t, '#34d399', "Nf", "A");
-        arrow(Bx, groundY, Bx, groundY - 300*t, '#fbbf24', "Nr", "B");
+    function drawArrow(x1, y1, x2, y2, color, label, point) {
+        const head = 25;
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.lineWidth = 10;
+        ctx.lineCap = 'round';
+
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        // Arrowhead
+        const angle = Math.atan2(y2 - y1, x2 - x1);
+        ctx.beginPath();
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(x2 - head * Math.cos(angle - Math.PI / 6), y2 - head * Math.sin(angle - Math.PI / 6));
+        ctx.lineTo(x2 - head * Math.cos(angle + Math.PI / 6), y2 - head * Math.sin(angle + Math.PI / 6));
+        ctx.fill();
+
+        // Labels
+        ctx.font = 'bold 36px Inter';
+        ctx.textAlign = 'left';
+        ctx.fillText(label, x2 + 30, y2 + 10);
+        
+        ctx.font = 'bold 24px JetBrains Mono';
+        ctx.fillStyle = 'white';
+        ctx.fillText(point, x1 - 45, y1 - 10);
     }
-}
 
-function drawDim(x1, x2, y, label, col) {
-    ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 3;
-    ctx.beginPath(); ctx.moveTo(x1+10, y); ctx.lineTo(x2-10, y); ctx.stroke();
-    // Arrows
-    ctx.beginPath(); ctx.moveTo(x1+25, y-10); ctx.lineTo(x1, y); ctx.lineTo(x1+25, y+10); ctx.fill();
-    ctx.beginPath(); ctx.moveTo(x2-25, y-10); ctx.lineTo(x2, y); ctx.lineTo(x2-25, y+10); ctx.fill();
-    // Text
-    ctx.font = "bold 24px JetBrains Mono"; ctx.textAlign = "center";
-    ctx.fillText(label, (x1+x2)/2, y - 20);
-}
+    function drawDim(x1, x2, y, text, color) {
+        const head = 20;
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.lineWidth = 3;
 
-function arrow(x1, y1, x2, y2, col, label, point) {
-    ctx.strokeStyle = col; ctx.lineWidth = 10; ctx.lineCap = "round";
-    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-    ctx.fillStyle = col; ctx.font = "bold 28px Inter"; ctx.textAlign = "left";
-    ctx.fillText(label, x2 + 20, y2);
-    ctx.fillStyle = "white"; ctx.fillText(point, x1 - 30, y1 - 10);
-}
+        // Horizontal line
+        ctx.beginPath();
+        ctx.moveTo(x1 + 10, y);
+        ctx.lineTo(x2 - 10, y);
+        ctx.stroke();
+
+        // Side arrows
+        ctx.beginPath();
+        ctx.moveTo(x1 + 30, y - 10); ctx.lineTo(x1, y); ctx.lineTo(x1 + 30, y + 10); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(x2 - 30, y - 10); ctx.lineTo(x2, y); ctx.lineTo(x2 - 30, y + 10); ctx.fill();
+
+        // Label
+        ctx.font = 'bold 28px JetBrains Mono';
+        ctx.textAlign = 'center';
+        ctx.fillText(text, (x1 + x2) / 2, y - 25);
+    }
+
+    // Initialize
+    calculate();
 </script>
+
 </body>
 </html>
