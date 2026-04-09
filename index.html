@@ -58,6 +58,7 @@ body{font-family:var(--font);background:var(--bg);background-image:linear-gradie
 /* ══ RESULTS & CANVAS ══ */
 .rg{display:grid;grid-template-columns:1fr 1fr;gap:8px}.chip{padding:10px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);text-align:center}
 .ck{font-size:9px;font-weight:700;color:var(--faint);margin-bottom:4px}.cv{font-family:var(--mono);font-size:15px;font-weight:700}
+.case-banner{padding:10px;border-radius:8px;font-size:11px;margin-bottom:10px;background:var(--orange-glow);border:1px solid var(--orange);color:var(--orange)}
 .canvas-zone{background:var(--bg);display:grid;place-items:center;padding:20px;min-height:500px}
 #fbdCanvas{border-radius:12px;width:100%;max-width:900px;background:var(--surface2);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
 .tabs{display:flex;gap:4px;background:var(--surface2);padding:4px;border-radius:10px}.tab{padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer}.tab.active{background:var(--surface);color:var(--text)}
@@ -67,7 +68,7 @@ body{font-family:var(--font);background:var(--bg);background-image:linear-gradie
 
 <header class="hdr">
   <div class="brand"><div class="logo">SM</div><div><div class="brand-name">StaticsMaster</div><div class="brand-sub">CAR SOLVER</div></div></div>
-  <button id="themeBtn" style="padding:8px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text)">🌓 Theme</button>
+  <button id="themeBtn" style="padding:8px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text)">🌓 Toggle Theme</button>
 </header>
 
 <div class="layout">
@@ -88,6 +89,7 @@ body{font-family:var(--font);background:var(--bg);background-image:linear-gradie
 
     <div class="card card-pad" id="resultCard" style="display:none">
       <div class="card-head"><div class="ibox ib-orange">✓</div><div><div class="ct">Results</div></div></div>
+      <div id="caseBanner" style="display:none" class="case-banner">⚠️ G is outside wheelbase! Tipping occurs.</div>
       <div class="rg">
         <div class="chip"><div class="ck">Weight (N)</div><div class="cv" id="r_W">—</div></div>
         <div class="chip"><div class="ck">Front Nf (N)</div><div class="cv" id="r_Nf">—</div></div>
@@ -100,9 +102,9 @@ body{font-family:var(--font);background:var(--bg);background-image:linear-gradie
   <main class="main-col">
     <section class="card">
       <div class="hdr" style="border:none; background:none">
-        <div class="ct">Visual Model</div>
+        <div class="ct">Free Body Diagram</div>
         <div class="tabs">
-          <div class="tab active" data-tab="fbd">Equilibrium</div>
+          <div class="tab active" data-tab="fbd">FBD</div>
           <div class="tab" data-tab="geom">Dimensions</div>
         </div>
       </div>
@@ -116,6 +118,7 @@ let dark = true;
 const canvas = document.getElementById('fbdCanvas');
 const ctx = canvas.getContext('2d');
 
+// Physical Validation & Logic
 function parse(id) {
   const val = document.getElementById(id).value;
   return isNaN(parseFloat(val)) ? val : parseFloat(val);
@@ -126,66 +129,61 @@ function compute() {
   const err = document.getElementById('errMsg');
   err.style.display = 'none';
 
-  if (m < 0 || g < 0 || df_mm < 0 || dr_mm < 0) {
-    err.textContent = "Error: Values cannot be negative.";
+  // 1. BLOCK IMPOSSIBLE PHYSICS
+  if (m < 0 || g < 0) {
+    err.textContent = "Error: Mass and Gravity cannot be negative.";
     err.style.display = 'block'; return null;
   }
 
   const df = df_mm / 1000, dr = dr_mm / 1000, L = df + dr;
-  const W = m * g, Nf = (W * dr) / L, Nr = (W * df) / L;
+
+  // 2. BLOCK IMPOSSIBLE GEOMETRY
+  if (L <= 0) {
+    err.textContent = "Error: Total wheelbase (L) must be positive.";
+    err.style.display = 'block'; return null;
+  }
+
+  const W = m * g;
+  const Nf = (W * dr) / L;
+  const Nr = (W * df) / L;
   
-  return { df, dr, L, W, Nf, Nr };
+  return { df, dr, L, W, Nf, Nr, tipping: (df < 0 || dr < 0) };
 }
 
+// Drawing Engine
 function draw(p, t, mode) {
-  const th = dark ? {bg:'#0d1117', car:'#38bdf8', text:'#e2eeff', forceFront:'#34d399', forceRear:'#fbbf24', weight:'#fb7185', dim:'#a78bfa'} 
-                  : {bg:'#ffffff', car:'#0284c7', text:'#0f172a', forceFront:'#059669', forceRear:'#d97706', weight:'#e11d48', dim:'#7c3aed'};
+  const th = dark ? {bg:'#0d1117', car:'#38bdf8', text:'#e2eeff', forceFront:'#34d399', forceRear:'#fbbf24', weight:'#fb7185'} 
+                  : {bg:'#ffffff', car:'#0284c7', text:'#0f172a', forceFront:'#059669', forceRear:'#d97706', weight:'#e11d48'};
   
   ctx.clearRect(0,0,1800,1000);
-  ctx.fillStyle = th.bg; ctx.fillRect(0,0,1800,1000);
+  ctx.fillStyle = th.bg;
+  ctx.fillRect(0,0,1800,1000);
 
-  const Ax = 500, Bx = 1300, groundY = 750;
+  const Ax = 500, Bx = 1300, groundY = 700;
   const Gx = Ax + (p.df / p.L) * (Bx - Ax);
 
-  // Ground Line
-  ctx.strokeStyle = th.text + '20'; ctx.lineWidth = 4;
-  ctx.beginPath(); ctx.moveTo(100, groundY); ctx.lineTo(1700, groundY); ctx.stroke();
+  // Ground
+  ctx.strokeStyle = th.text; ctx.lineWidth = 4;
+  ctx.beginPath(); ctx.moveTo(200, groundY); ctx.lineTo(1600, groundY); ctx.stroke();
 
   // Car Body
-  ctx.fillStyle = th.car + '15';
-  ctx.roundRect(Ax-200, groundY-300, (Bx-Ax)+400, 240, 50); ctx.fill();
+  ctx.fillStyle = th.car + '33';
+  ctx.roundRect(Ax-150, groundY-250, (Bx-Ax)+300, 200, 40); ctx.fill();
   ctx.strokeStyle = th.car; ctx.lineWidth = 6; ctx.stroke();
 
   if (mode === 'fbd') {
-    arrow(Gx, groundY-180, Gx, groundY+150, th.weight, t, "W = " + p.W.toFixed(0) + "N");
-    arrow(Ax, groundY, Ax, groundY-350, th.forceFront, t, "Nf = " + p.Nf.toFixed(0) + "N");
-    arrow(Bx, groundY, Bx, groundY-350, th.forceRear, t, "Nr = " + p.Nr.toFixed(0) + "N");
+    // Weight Arrow (Always Down)
+    arrow(Gx, groundY-150, Gx, groundY+100, th.weight, t, "W = " + p.W.toFixed(0) + "N");
+    // Reaction Arrows (Only if positive)
+    if (p.Nf > 0) arrow(Ax, groundY, Ax, groundY-250, th.forceFront, t, "Nf");
+    if (p.Nr > 0) arrow(Bx, groundY, Bx, groundY-250, th.forceRear, t, "Nr");
   } else {
-    // NEAT DIMENSION LINES (NO CLUTTER)
-    const dimY = groundY + 100;
-    
-    // Vertical Indicator Lines
-    ctx.strokeStyle = th.dim; ctx.lineWidth = 2; ctx.setLineDash([5, 5]);
-    [Ax, Gx, Bx].forEach(x => {
-      ctx.beginPath(); ctx.moveTo(x, groundY); ctx.lineTo(x, dimY + 40); ctx.stroke();
-    });
-
-    // Horizontal Arrows for df and dr
-    ctx.setLineDash([]);
-    drawDim(Ax, Gx, dimY, `df: ${(p.df*1000).toFixed(0)}mm`, th.dim);
-    drawDim(Gx, Bx, dimY, `dr: ${(p.dr*1000).toFixed(0)}mm`, th.dim);
+    // Dimension Lines
+    ctx.setLineDash([10, 10]);
+    ctx.beginPath(); ctx.moveTo(Ax, groundY+50); ctx.lineTo(Gx, groundY+50); ctx.stroke();
+    ctx.font = "bold 30px Space Mono"; ctx.fillStyle = th.text;
+    ctx.fillText(`df: ${(p.df*1000).toFixed(0)}mm`, (Ax+Gx)/2 - 50, groundY+90);
   }
-}
-
-function drawDim(x1, x2, y, label, color) {
-  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 3;
-  ctx.beginPath(); ctx.moveTo(x1, y); ctx.lineTo(x2, y); ctx.stroke();
-  // Arrow heads
-  ctx.beginPath(); ctx.moveTo(x1+15, y-8); ctx.lineTo(x1, y); ctx.lineTo(x1+15, y+8); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(x2-15, y-8); ctx.lineTo(x2, y); ctx.lineTo(x2-15, y+8); ctx.stroke();
-  // Label
-  ctx.font = "bold 32px Space Mono"; ctx.textAlign = "center";
-  ctx.fillText(label, (x1+x2)/2, y - 15);
 }
 
 function arrow(x1, y1, x2, y2, color, t, label) {
@@ -193,16 +191,18 @@ function arrow(x1, y1, x2, y2, color, t, label) {
   ctx.strokeStyle = color; ctx.lineWidth = 8;
   ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(curX, curY); ctx.stroke();
   if (t > 0.9) {
-    ctx.fillStyle = color; ctx.font = "bold 34px Space Mono"; ctx.textAlign = "left";
-    ctx.fillText(label, curX + 25, curY);
+    ctx.fillStyle = color; ctx.font = "bold 34px Space Mono";
+    ctx.fillText(label, curX + 20, curY);
     ctx.beginPath(); ctx.arc(curX, curY, 12, 0, Math.PI*2); ctx.fill();
   }
 }
 
 let anim;
 document.getElementById('solveBtn').onclick = () => {
-  const p = compute(); if (!p) return;
+  const p = compute();
+  if (!p) return;
   document.getElementById('resultCard').style.display = 'block';
+  document.getElementById('caseBanner').style.display = p.tipping ? 'block' : 'none';
   document.getElementById('r_W').textContent = p.W.toFixed(1);
   document.getElementById('r_Nf').textContent = p.Nf.toFixed(1);
   document.getElementById('r_Nr').textContent = p.Nr.toFixed(1);
@@ -211,11 +211,12 @@ document.getElementById('solveBtn').onclick = () => {
   let start = null;
   const step = (now) => {
     if (!start) start = now;
-    const t = Math.min(1, (now - start) / 800);
+    const t = Math.min(1, (now - start) / 1000);
     draw(p, t, document.querySelector('.tab.active').dataset.tab);
     if (t < 1) anim = requestAnimationFrame(step);
   };
-  cancelAnimationFrame(anim); anim = requestAnimationFrame(step);
+  cancelAnimationFrame(anim);
+  anim = requestAnimationFrame(step);
 };
 
 document.querySelectorAll('.tab').forEach(tab => {
