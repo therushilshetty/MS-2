@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>StaticsMaster · Car Equilibrium</title>
+<title>StaticsMaster · Car Equilibrium Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-/* ══ CORE THEME ══ */
 :root{
   --bg:#07090f;--surface:#0d1117;--surface2:#111827;--surface3:#162033;
   --border:rgba(56,189,248,.13);--divider:rgba(56,189,248,.07);
@@ -14,9 +13,7 @@
   --cyan:#38bdf8;--cyan-glow:rgba(56,189,248,.18);
   --violet:#a78bfa;--violet-glow:rgba(167,139,250,.15);
   --orange:#fb923c;--orange-glow:rgba(251,146,60,.15);
-  --green:#34d399;--green-glow:rgba(52,211,153,.14);
-  --rose:#fb7185;--rose-glow:rgba(251,113,133,.13);
-  --grid-line:rgba(56,189,248,.04);
+  --green:#34d399;--rose:#fb7185;
   --font:'Space Grotesk',sans-serif;--mono:'Space Mono',monospace;
   --r-lg:20px;
 }
@@ -24,60 +21,52 @@
   --bg:#f0f4fa;--surface:#fff;--surface2:#f5f9ff;--surface3:#eaf2ff;
   --border:rgba(14,80,180,.10);--divider:rgba(14,80,180,.06);
   --text:#0f172a;--muted:#4b6b96;--faint:#94a3b8;
-  --cyan:#0284c7;--cyan-glow:rgba(2,132,199,.10);
-  --violet:#7c3aed;--violet-glow:rgba(124,58,237,.10);
-  --orange:#ea580c;--orange-glow:rgba(234,88,12,.10);
-  --green:#059669;--green-glow:rgba(5,150,105,.10);
-  --rose:#e11d48;--rose-glow:rgba(225,29,72,.10);
-  --grid-line:rgba(14,80,180,.04);
+  --cyan:#0284c7;--violet:#7c3aed;--orange:#ea580c;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font);background:var(--bg);background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:40px 40px;color:var(--text);min-height:100vh;overflow-x:hidden}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 
-/* ══ LAYOUT ══ */
-.hdr{position:sticky;top:0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:0 24px;height:56px;background:color-mix(in srgb,var(--surface) 85%,transparent);border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}
+.hdr{position:sticky;top:0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:0 24px;height:60px;background:color-mix(in srgb,var(--surface) 85%,transparent);border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}
 .brand{display:flex;align-items:center;gap:12px}.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:grid;place-items:center;font-family:var(--mono);font-size:12px;font-weight:700;color:#fff}
 .brand-name{font-size:15px;font-weight:700}.brand-sub{font-size:10px;color:var(--muted);font-family:var(--mono)}
-.layout{display:grid;grid-template-columns:355px 1fr;min-height:calc(100vh - 56px)}
-.sidebar{padding:16px;border-right:1px solid var(--border);background:color-mix(in srgb,var(--surface) 70%,transparent);display:flex;flex-direction:column;gap:12px;overflow-y:auto}
-.main-col{padding:16px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
 
-/* ══ UI COMPONENTS ══ */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}.card-pad{padding:16px}
-.card-head{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px}
-.ibox{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:13px}
-.ib-cyan{background:var(--cyan-glow);color:var(--cyan);border:1px solid rgba(56,189,248,.25)}
-.ib-orange{background:var(--orange-glow);color:var(--orange);border:1px solid rgba(251,146,60,.25)}
-.ct{font-size:12px;font-weight:700}.cs{font-size:10px;color:var(--muted)}
-.field label{display:block;font-size:9px;font-weight:700;color:var(--muted);margin:8px 0 4px;text-transform:uppercase}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.iw input{width:100%;padding:8px 11px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-size:12px;color:var(--text)}
-.solve-btn{width:100%;padding:11px;border-radius:12px;font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--cyan),var(--violet));margin-top:12px;cursor:pointer}
-.errmsg{display:none;font-size:11px;color:var(--rose);background:rgba(251,113,133,0.1);padding:8px;border-radius:8px;margin-top:10px}
+.layout{display:grid;grid-template-columns:360px 1fr;min-height:calc(100vh - 60px)}
+.sidebar{padding:20px;border-right:1px solid var(--border);background:color-mix(in srgb,var(--surface) 70%,transparent);display:flex;flex-direction:column;gap:16px;overflow-y:auto}
+.main-col{padding:20px;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
 
-/* ══ RESULTS & CANVAS ══ */
-.rg{display:grid;grid-template-columns:1fr 1fr;gap:8px}.chip{padding:10px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);text-align:center}
-.ck{font-size:9px;font-weight:700;color:var(--faint);margin-bottom:4px}.cv{font-family:var(--mono);font-size:15px;font-weight:700}
-.case-banner{padding:10px;border-radius:8px;font-size:11px;margin-bottom:10px;background:var(--orange-glow);border:1px solid var(--orange);color:var(--orange)}
-.canvas-zone{background:var(--bg);display:grid;place-items:center;padding:20px;min-height:500px}
-#fbdCanvas{border-radius:12px;width:100%;max-width:900px;background:var(--surface2);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
-.tabs{display:flex;gap:4px;background:var(--surface2);padding:4px;border-radius:10px}.tab{padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer}.tab.active{background:var(--surface);color:var(--text)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}.card-pad{padding:20px}
+.field label{display:block;font-size:9px;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.iw input{width:100%;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-size:13px;color:var(--text);font-family:var(--mono)}
+.iw input:focus{border-color:var(--cyan);outline:none;background:var(--surface3)}
+
+.solve-btn{width:100%;padding:14px;border-radius:12px;font-size:14px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--cyan),var(--violet));cursor:pointer;border:none;transition:0.3s;margin-top:10px}
+.solve-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.errmsg{display:none;font-size:11px;color:var(--rose);background:rgba(251,113,133,0.1);padding:10px;border-radius:10px;margin-top:10px;border:1px solid rgba(251,113,133,0.2)}
+
+.tabs{display:flex;gap:4px;background:var(--surface2);padding:4px;border-radius:12px}.tab{flex:1;padding:8px;border-radius:9px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;text-align:center;transition:0.2s}.tab.active{background:var(--surface);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+
+#fbdCanvas{width:100%;height:auto;display:block;background:var(--surface2);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,0.4)}
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
+.chip{padding:12px;background:var(--surface2);border-radius:12px;border:1px solid var(--border);text-align:center}
+.chip span{display:block;font-size:9px;color:var(--faint);font-weight:700;text-transform:uppercase;margin-bottom:4px}
+.chip b{font-family:var(--mono);font-size:15px;color:var(--text)}
 </style>
 </head>
 <body>
 
 <header class="hdr">
-  <div class="brand"><div class="logo">SM</div><div><div class="brand-name">StaticsMaster</div><div class="brand-sub">CAR SOLVER</div></div></div>
-  <button id="themeBtn" style="padding:8px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text)">🌓 Toggle Theme</button>
+  <div class="brand"><div class="logo">SM</div><div><div class="brand-name">StaticsMaster</div><div class="brand-sub">MOMENTS & EQUILIBRIUM</div></div></div>
+  <button id="themeBtn" style="background:var(--surface2); border:1px solid var(--border); color:var(--text); padding:8px 16px; border-radius:10px; font-size:12px; cursor:pointer">🌓 Theme Toggle</button>
 </header>
 
 <div class="layout">
   <aside class="sidebar">
     <div class="card card-pad">
-      <div class="card-head"><div class="ibox ib-cyan">📐</div><div><div class="ct">Inputs</div><div class="cs">Physics & Geometry</div></div></div>
+      <div style="margin-bottom:15px"><h3 style="font-size:14px">Input parameters</h3></div>
       <div class="field-row">
-        <div class="field"><label>Front → G (mm)</label><div class="iw"><input id="inp_df" value="1386"></div></div>
-        <div class="field"><label>G → Rear (mm)</label><div class="iw"><input id="inp_dr" value="964"></div></div>
+        <div class="field"><label>Front to G (mm)</label><div class="iw"><input id="inp_df" value="1386"></div></div>
+        <div class="field"><label>G to Rear (mm)</label><div class="iw"><input id="inp_dr" value="964"></div></div>
       </div>
       <div class="field-row">
         <div class="field"><label>Mass (kg)</label><div class="iw"><input id="inp_mass" value="1400"></div></div>
@@ -87,29 +76,28 @@ body{font-family:var(--font);background:var(--bg);background-image:linear-gradie
       <div class="errmsg" id="errMsg"></div>
     </div>
 
-    <div class="card card-pad" id="resultCard" style="display:none">
-      <div class="card-head"><div class="ibox ib-orange">✓</div><div><div class="ct">Results</div></div></div>
-      <div id="caseBanner" style="display:none" class="case-banner">⚠️ G is outside wheelbase! Tipping occurs.</div>
-      <div class="rg">
-        <div class="chip"><div class="ck">Weight (N)</div><div class="cv" id="r_W">—</div></div>
-        <div class="chip"><div class="ck">Front Nf (N)</div><div class="cv" id="r_Nf">—</div></div>
-        <div class="chip"><div class="ck">Rear Nr (N)</div><div class="cv" id="r_Nr">—</div></div>
-        <div class="chip"><div class="ck">Wheelbase (m)</div><div class="cv" id="r_L">—</div></div>
+    <div id="resCard" class="card card-pad" style="display:none">
+      <h3 style="font-size:12px; color:var(--cyan); margin-bottom:12px">Equilibrium Results</h3>
+      <div class="results-grid">
+        <div class="chip"><span>Weight (W)</span><b id="r_W">-</b></div>
+        <div class="chip"><span>Wheelbase (L)</span><b id="r_L">-</b></div>
+        <div class="chip"><span>Nf (ΣM_rear=0)</span><b id="r_Nf">-</b></div>
+        <div class="chip"><span>Nr (ΣM_front=0)</span><b id="r_Nr">-</b></div>
       </div>
     </div>
   </aside>
 
   <main class="main-col">
-    <section class="card">
-      <div class="hdr" style="border:none; background:none">
-        <div class="ct">Free Body Diagram</div>
-        <div class="tabs">
-          <div class="tab active" data-tab="fbd">FBD</div>
+    <div class="card">
+      <div style="padding:15px 20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border)">
+        <span style="font-size:13px; font-weight:600">Free Body & Geometry Engine</span>
+        <div class="tabs" style="width:260px">
+          <div class="tab active" data-tab="fbd">Forces (FBD)</div>
           <div class="tab" data-tab="geom">Dimensions</div>
         </div>
       </div>
-      <div class="canvas-zone"><canvas id="fbdCanvas" width="1800" height="1000"></canvas></div>
-    </section>
+      <div style="padding:20px"><canvas id="fbdCanvas" width="1800" height="1000"></canvas></div>
+    </div>
   </main>
 </div>
 
@@ -118,119 +106,143 @@ let dark = true;
 const canvas = document.getElementById('fbdCanvas');
 const ctx = canvas.getContext('2d');
 
-// Physical Validation & Logic
 function parse(id) {
-  const val = document.getElementById(id).value;
-  return isNaN(parseFloat(val)) ? val : parseFloat(val);
+  const val = document.getElementById(id).value.trim();
+  const num = parseFloat(val);
+  return isNaN(num) ? val : num;
 }
 
 function compute() {
-  const df_mm = parse('inp_df'), dr_mm = parse('inp_dr'), m = parse('inp_mass'), g = parse('inp_g');
+  const df_raw = parse('inp_df'), dr_raw = parse('inp_dr');
+  const m_raw = parse('inp_mass'), g_raw = parse('inp_g');
   const err = document.getElementById('errMsg');
   err.style.display = 'none';
 
-  // 1. BLOCK IMPOSSIBLE PHYSICS
-  if (m < 0 || g < 0) {
-    err.textContent = "Error: Mass and Gravity cannot be negative.";
-    err.style.display = 'block'; return null;
+  const isSym = typeof df_raw === 'string' || typeof dr_raw === 'string' || typeof m_raw === 'string' || typeof g_raw === 'string';
+
+  if (!isSym) {
+    if (m_raw < 0 || g_raw < 0 || df_raw < 0 || dr_raw < 0) {
+      err.textContent = "Error: Input values cannot be negative.";
+      err.style.display = 'block'; return null;
+    }
+    const L = (df_raw + dr_raw) / 1000;
+    if (L <= 0) { err.textContent = "Error: Total length must be > 0."; err.style.display = 'block'; return null; }
+    
+    const W = m_raw * g_raw;
+    // Nf calculated via moments around Rear Wheel (ΣMr = 0)
+    // Nr calculated via moments around Front Wheel (ΣMf = 0)
+    return { df: df_raw/1000, dr: dr_raw/1000, L, W, Nf: (W * (dr_raw/1000)) / L, Nr: (W * (df_raw/1000)) / L, isSym: false };
   }
-
-  const df = df_mm / 1000, dr = dr_mm / 1000, L = df + dr;
-
-  // 2. BLOCK IMPOSSIBLE GEOMETRY
-  if (L <= 0) {
-    err.textContent = "Error: Total wheelbase (L) must be positive.";
-    err.style.display = 'block'; return null;
-  }
-
-  const W = m * g;
-  const Nf = (W * dr) / L;
-  const Nr = (W * df) / L;
-  
-  return { df, dr, L, W, Nf, Nr, tipping: (df < 0 || dr < 0) };
+  return { df: df_raw, dr: dr_raw, L: 'L', W: 'W', Nf: 'Nf', Nr: 'Nr', isSym: true };
 }
 
-// Drawing Engine
 function draw(p, t, mode) {
-  const th = dark ? {bg:'#0d1117', car:'#38bdf8', text:'#e2eeff', forceFront:'#34d399', forceRear:'#fbbf24', weight:'#fb7185'} 
-                  : {bg:'#ffffff', car:'#0284c7', text:'#0f172a', forceFront:'#059669', forceRear:'#d97706', weight:'#e11d48'};
+  const th = dark ? {bg:'#0d1117', car:'#38bdf8', text:'#e2eeff', Nf:'#34d399', Nr:'#fbbf24', W:'#fb7185', dim:'#a78bfa', ref:'rgba(226,238,255,0.1)'} 
+                  : {bg:'#ffffff', car:'#0284c7', text:'#0f172a', Nf:'#059669', Nr:'#d97706', W:'#e11d48', dim:'#7c3aed', ref:'rgba(15,23,42,0.08)'};
   
   ctx.clearRect(0,0,1800,1000);
-  ctx.fillStyle = th.bg;
-  ctx.fillRect(0,0,1800,1000);
+  ctx.fillStyle = th.bg; ctx.fillRect(0,0,1800,1000);
 
-  const Ax = 500, Bx = 1300, groundY = 700;
-  const Gx = Ax + (p.df / p.L) * (Bx - Ax);
+  const Ax = 500, Bx = 1300, groundY = 600;
+  const df_px = p.isSym ? 400 : (p.df / p.L) * (Bx - Ax);
+  const Gx = Ax + df_px;
 
-  // Ground
-  ctx.strokeStyle = th.text; ctx.lineWidth = 4;
-  ctx.beginPath(); ctx.moveTo(200, groundY); ctx.lineTo(1600, groundY); ctx.stroke();
+  // NEAT VERTICAL REFERENCE LINES (DOTTED)
+  ctx.setLineDash([12, 12]); ctx.strokeStyle = th.ref; ctx.lineWidth = 3;
+  [Ax, Gx, Bx].forEach(x => { 
+    ctx.beginPath(); ctx.moveTo(x, groundY - 350); ctx.lineTo(x, groundY + 400); ctx.stroke(); 
+  });
+  ctx.setLineDash([]);
+
+  // Ground Line
+  ctx.strokeStyle = th.text + '20'; ctx.lineWidth = 8;
+  ctx.beginPath(); ctx.moveTo(100, groundY); ctx.lineTo(1700, groundY); ctx.stroke();
 
   // Car Body
-  ctx.fillStyle = th.car + '33';
-  ctx.roundRect(Ax-150, groundY-250, (Bx-Ax)+300, 200, 40); ctx.fill();
+  ctx.fillStyle = th.car + '15'; ctx.roundRect(Ax-220, groundY-280, (Bx-Ax)+440, 220, 50); ctx.fill();
   ctx.strokeStyle = th.car; ctx.lineWidth = 6; ctx.stroke();
 
   if (mode === 'fbd') {
-    // Weight Arrow (Always Down)
-    arrow(Gx, groundY-150, Gx, groundY+100, th.weight, t, "W = " + p.W.toFixed(0) + "N");
-    // Reaction Arrows (Only if positive)
-    if (p.Nf > 0) arrow(Ax, groundY, Ax, groundY-250, th.forceFront, t, "Nf");
-    if (p.Nr > 0) arrow(Bx, groundY, Bx, groundY-250, th.forceRear, t, "Nr");
+    arrow(Gx, groundY-140, Gx, groundY+250, th.W, t, p.isSym ? "W" : `W: ${p.W.toFixed(0)}N`);
+    arrow(Ax, groundY, Ax, groundY-450, th.Nf, t, p.isSym ? "Nf" : `Nf: ${p.Nf.toFixed(0)}N`);
+    arrow(Bx, groundY, Bx, groundY-450, th.Nr, t, p.isSym ? "Nr" : `Nr: ${p.Nr.toFixed(0)}N`);
   } else {
-    // Dimension Lines
-    ctx.setLineDash([10, 10]);
-    ctx.beginPath(); ctx.moveTo(Ax, groundY+50); ctx.lineTo(Gx, groundY+50); ctx.stroke();
-    ctx.font = "bold 30px Space Mono"; ctx.fillStyle = th.text;
-    ctx.fillText(`df: ${(p.df*1000).toFixed(0)}mm`, (Ax+Gx)/2 - 50, groundY+90);
+    // TIERED DIMENSION SYSTEM (No Overlap)
+    const tier1 = groundY + 120; // Level for df and dr
+    const tier2 = groundY + 280; // Level for total L
+
+    // Extension connect lines
+    ctx.strokeStyle = th.dim; ctx.lineWidth = 2;
+    [Ax, Gx, Bx].forEach(x => {
+        ctx.beginPath(); ctx.moveTo(x, groundY + 20); ctx.lineTo(x, groundY + 80); ctx.stroke();
+    });
+
+    // df & dr (Tier 1)
+    drawDimLine(Ax, Gx, tier1, p.isSym ? p.df : `df: ${(p.df*1000).toFixed(0)}mm`, th.dim);
+    drawDimLine(Gx, Bx, tier1, p.isSym ? p.dr : `dr: ${(p.dr*1000).toFixed(0)}mm`, th.dim);
+
+    // Total Wheelbase (Tier 2 - Placed lower for clarity)
+    drawDimLine(Ax, Bx, tier2, p.isSym ? "Wheelbase L" : `Total Wheelbase L: ${(p.L*1000).toFixed(0)}mm`, th.cyan);
   }
 }
 
-function arrow(x1, y1, x2, y2, color, t, label) {
-  const curX = x1 + (x2-x1)*t, curY = y1 + (y2-y1)*t;
-  ctx.strokeStyle = color; ctx.lineWidth = 8;
-  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(curX, curY); ctx.stroke();
-  if (t > 0.9) {
-    ctx.fillStyle = color; ctx.font = "bold 34px Space Mono";
-    ctx.fillText(label, curX + 20, curY);
-    ctx.beginPath(); ctx.arc(curX, curY, 12, 0, Math.PI*2); ctx.fill();
+function drawDimLine(x1, x2, y, label, col) {
+  ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 4;
+  // Horizontal track
+  ctx.beginPath(); ctx.moveTo(x1+5, y); ctx.lineTo(x2-5, y); ctx.stroke();
+  // Arrow tips
+  ctx.beginPath(); ctx.moveTo(x1+25, y-15); ctx.lineTo(x1, y); ctx.lineTo(x1+25, y+15); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(x2-25, y-15); ctx.lineTo(x2, y); ctx.lineTo(x2-25, y+15); ctx.fill();
+  // Centered Label
+  ctx.font = "bold 34px Space Grotesk"; ctx.textAlign = "center";
+  ctx.fillText(label, (x1+x2)/2, y - 25);
+}
+
+function arrow(x1, y1, x2, y2, col, t, lbl) {
+  const cx = x1 + (x2-x1)*t, cy = y1 + (y2-y1)*t;
+  ctx.strokeStyle = col; ctx.lineWidth = 12; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(cx, cy); ctx.stroke();
+  if (t > 0.95) {
+    ctx.fillStyle = col; ctx.beginPath(); ctx.arc(cx, cy, 15, 0, 7); ctx.fill();
+    ctx.font = "bold 38px Space Mono"; ctx.textAlign = "left";
+    ctx.fillText(lbl, cx + 35, cy + 12);
   }
 }
 
 let anim;
 document.getElementById('solveBtn').onclick = () => {
-  const p = compute();
-  if (!p) return;
-  document.getElementById('resultCard').style.display = 'block';
-  document.getElementById('caseBanner').style.display = p.tipping ? 'block' : 'none';
-  document.getElementById('r_W').textContent = p.W.toFixed(1);
-  document.getElementById('r_Nf').textContent = p.Nf.toFixed(1);
-  document.getElementById('r_Nr').textContent = p.Nr.toFixed(1);
-  document.getElementById('r_L').textContent = p.L.toFixed(3);
+  const p = compute(); if (!p) return;
+  document.getElementById('resCard').style.display = 'block';
+  
+  const set = (id, val) => document.getElementById(id).textContent = val;
+  if (!p.isSym) {
+    set('r_W', p.W.toFixed(0) + ' N'); set('r_L', p.L.toFixed(3) + ' m');
+    set('r_Nf', p.Nf.toFixed(1) + ' N'); set('r_Nr', p.Nr.toFixed(1) + ' N');
+  } else {
+    set('r_W', 'm·g'); set('r_L', 'df + dr'); set('r_Nf', '(W·dr)/L'); set('r_Nr', '(W·df)/L');
+  }
 
   let start = null;
   const step = (now) => {
     if (!start) start = now;
-    const t = Math.min(1, (now - start) / 1000);
+    const t = Math.min(1, (now - start) / 800);
     draw(p, t, document.querySelector('.tab.active').dataset.tab);
     if (t < 1) anim = requestAnimationFrame(step);
   };
-  cancelAnimationFrame(anim);
-  anim = requestAnimationFrame(step);
+  cancelAnimationFrame(anim); anim = requestAnimationFrame(step);
 };
 
 document.querySelectorAll('.tab').forEach(tab => {
   tab.onclick = () => {
     document.querySelector('.tab.active').classList.remove('active');
     tab.classList.add('active');
-    document.getElementById('solveBtn').click();
+    const p = compute(); if(p) draw(p, 1, tab.dataset.tab);
   };
 });
 
 document.getElementById('themeBtn').onclick = () => {
-  dark = !dark;
-  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-  document.getElementById('solveBtn').click();
+  dark = !dark; document.documentElement.setAttribute('data-theme', dark?'dark':'light');
+  const p = compute(); if(p) draw(p, 1, document.querySelector('.tab.active').dataset.tab);
 };
 </script>
 </body>
