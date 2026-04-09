@@ -152,8 +152,6 @@
             gap: 8px;
         }
 
-        .group-title i { color: var(--cyan); }
-
         .field-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -167,10 +165,6 @@
             color: var(--text-muted);
             margin-bottom: 6px;
             font-weight: 500;
-        }
-
-        .input-wrapper {
-            position: relative;
         }
 
         .input-wrapper input {
@@ -202,24 +196,15 @@
             font-size: 14px;
             cursor: pointer;
             margin-top: 8px;
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
             transition: 0.2s;
         }
 
-        .solve-btn:hover {
-            transform: translateY(-1px);
-            filter: brightness(1.1);
-        }
-
-        /* ═══ RESULTS SECTION ═══ */
+        /* ═══ RESULTS PANEL ═══ */
         .results-panel {
             display: none;
             flex-direction: column;
             gap: 12px;
-            animation: fadeIn 0.4s ease-out;
         }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .res-card {
             background: var(--card);
@@ -248,7 +233,6 @@
             color: var(--text-muted);
             text-transform: uppercase;
             margin-bottom: 4px;
-            font-weight: 700;
         }
 
         .res-box value {
@@ -264,7 +248,6 @@
             background: #0d1117;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
         }
 
         .canvas-toolbar {
@@ -276,7 +259,6 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 24px;
-            z-index: 10;
         }
 
         .view-tabs {
@@ -293,13 +275,11 @@
             color: var(--text-muted);
             cursor: pointer;
             border-radius: 8px;
-            transition: 0.2s;
         }
 
         .tab.active {
             background: var(--card);
             color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         canvas {
@@ -308,41 +288,12 @@
             height: 100%;
         }
 
-        /* ═══ SOLUTION FOOTER ═══ */
         .solution-footer {
             height: 200px;
             background: var(--panel);
             border-top: 1px solid var(--border);
             padding: 24px;
             overflow-y: auto;
-        }
-
-        .step-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .step-item {
-            display: flex;
-            gap: 16px;
-            font-size: 13px;
-            color: var(--text-muted);
-            align-items: flex-start;
-        }
-
-        .step-num {
-            width: 24px;
-            height: 24px;
-            background: var(--accent-primary);
-            color: white;
-            border-radius: 50%;
-            display: grid;
-            place-items: center;
-            font-weight: 700;
-            font-size: 11px;
-            flex-shrink: 0;
         }
 
         .math {
@@ -367,7 +318,6 @@
     <div class="nav-tools">
         <button class="tool-btn active">NUMERIC</button>
         <button class="tool-btn">SYMBOLIC</button>
-        <button class="tool-btn">EXPORT</button>
     </div>
 </header>
 
@@ -376,33 +326,13 @@
         <div class="input-group">
             <div class="group-title"><span>📐</span> Geometry (Axles to Center)</div>
             <div class="field-grid">
-                <div class="field">
-                    <label>Front Axle → G</label>
-                    <div class="input-wrapper">
-                        <input id="in_df" value="1386" placeholder="mm">
-                    </div>
-                </div>
-                <div class="field">
-                    <label>G → Rear Axle</label>
-                    <div class="input-wrapper">
-                        <input id="in_dr" value="964" placeholder="mm">
-                    </div>
-                </div>
+                <div class="field"><label>Front Axle → G</label><div class="input-wrapper"><input id="in_df" value="1386"></div></div>
+                <div class="field"><label>G → Rear Axle</label><div class="input-wrapper"><input id="in_dr" value="964"></div></div>
             </div>
             <div class="group-title"><span>⚖️</span> Load / Physics</div>
             <div class="field-grid">
-                <div class="field">
-                    <label>Total Mass (kg)</label>
-                    <div class="input-wrapper">
-                        <input id="in_m" value="1400">
-                    </div>
-                </div>
-                <div class="field">
-                    <label>Gravity (m/s²)</label>
-                    <div class="input-wrapper">
-                        <input id="in_g" value="9.81">
-                    </div>
-                </div>
+                <div class="field"><label>Total Mass (kg)</label><div class="input-wrapper"><input id="in_m" value="1400"></div></div>
+                <div class="field"><label>Gravity (m/s²)</label><div class="input-wrapper"><input id="in_g" value="9.81"></div></div>
             </div>
             <button class="solve-btn" onclick="calculate()">🚀 Solve & Animate</button>
         </div>
@@ -411,36 +341,10 @@
             <div class="res-card">
                 <div class="group-title"><span>📊</span> Statics Analysis</div>
                 <div class="res-grid">
-                    <div class="res-box">
-                        <label>Weight (W)</label>
-                        <value id="res_W">-</value>
-                    </div>
-                    <div class="res-box">
-                        <label>Wheelbase (L)</label>
-                        <value id="res_L">-</value>
-                    </div>
-                    <div class="res-box">
-                        <label>Front Reaction (Nf)</label>
-                        <value id="res_Nf">-</value>
-                    </div>
-                    <div class="res-box">
-                        <label>Rear Reaction (Nr)</label>
-                        <value id="res_Nr">-</value>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="res-card">
-                <div class="group-title"><span>🛞</span> Force Per Tire</div>
-                <div class="res-grid">
-                    <div class="res-box">
-                        <label>Front Single</label>
-                        <value id="res_f_tire" style="color: var(--cyan)">-</value>
-                    </div>
-                    <div class="res-box">
-                        <label>Rear Single</label>
-                        <value id="res_r_tire" style="color: var(--amber)">-</value>
-                    </div>
+                    <div class="res-box"><label>Weight (W)</label><value id="res_W">-</value></div>
+                    <div class="res-box"><label>Wheelbase (L)</label><value id="res_L">-</value></div>
+                    <div class="res-box"><label>Front Reaction</label><value id="res_Nf">-</value></div>
+                    <div class="res-box"><label>Rear Reaction</label><value id="res_Nr">-</value></div>
                 </div>
             </div>
         </div>
@@ -461,12 +365,12 @@
         <canvas id="mainCanvas"></canvas>
         <div class="solution-footer">
             <div class="group-title"><span>📝</span> Step-by-Step Solution</div>
-            <ul class="step-list" id="stepList">
-                <li class="step-item"><div class="step-num">1</div> <div>Calculate total gravitational force (Weight) acting at Center G: <span class="math">W = m × g</span></div></li>
-                <li class="step-item"><div class="step-num">2</div> <div>Define total wheelbase as sum of segments: <span class="math">L = df + dr</span></div></li>
-                <li class="step-item"><div class="step-num">3</div> <div>Sum moments about Rear Axle (B) to find Front Reaction: <span class="math">ΣM_B = 0 → Nf = (W × dr) / L</span></div></li>
-                <li class="step-item"><div class="step-num">4</div> <div>Sum moments about Front Axle (A) to find Rear Reaction: <span class="math">ΣM_A = 0 → Nr = (W × df) / L</span></div></li>
-            </ul>
+            <div style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">
+                1. $W = m \cdot g$<br>
+                2. $L = d_f + d_r$<br>
+                3. $\sum M_B = 0 \rightarrow N_f = (W \cdot d_r) / L$<br>
+                4. $\sum M_A = 0 \rightarrow N_r = (W \cdot d_f) / L$
+            </div>
         </div>
     </div>
 </main>
@@ -501,25 +405,16 @@
         const L_m = (df + dr) / 1000;
         const W_n = m * g;
         
-        if(L_m <= 0) return;
-
         data = {
-            df_m: df / 1000,
-            dr_m: dr / 1000,
-            L: L_m,
-            W: W_n,
-            Nf: (W_n * (dr / 1000)) / L_m,
-            Nr: (W_n * (df / 1000)) / L_m
+            df_m: df / 1000, dr_m: dr / 1000, L: L_m, W: W_n,
+            Nf: (W_n * (dr / 1000)) / L_m, Nr: (W_n * (df / 1000)) / L_m
         };
 
-        // Update Dashboard
         document.getElementById('resultsPanel').style.display = 'flex';
         document.getElementById('res_W').textContent = data.W.toFixed(1) + ' N';
         document.getElementById('res_L').textContent = data.L.toFixed(3) + ' m';
         document.getElementById('res_Nf').textContent = data.Nf.toFixed(1) + ' N';
         document.getElementById('res_Nr').textContent = data.Nr.toFixed(1) + ' N';
-        document.getElementById('res_f_tire').textContent = (data.Nf/2).toFixed(1) + ' N';
-        document.getElementById('res_r_tire').textContent = (data.Nr/2).toFixed(1) + ' N';
 
         animate();
     }
@@ -537,150 +432,61 @@
 
     function draw(progress) {
         if(!data) return;
-        const w = canvas.width;
-        const h = canvas.height;
+        const w = canvas.width, h = canvas.height;
         ctx.clearRect(0,0,w,h);
+        const groundY = h * 0.7, visualL = w * 0.5;
+        const Ax = (w/2) - (visualL/2), Bx = (w/2) + (visualL/2);
+        const Gx = Ax + (visualL * (data.df_m / data.L));
 
-        const groundY = h * 0.7;
-        const centerX = w / 2;
-        const visualL = w * 0.5;
-        
-        const Ax = centerX - (visualL/2);
-        const Bx = centerX + (visualL/2);
-        const ratio = data.df_m / data.L;
-        const Gx = Ax + (visualL * ratio);
-
-        // 1. DOTTED REFERENCE LINES
-        ctx.setLineDash([10, 10]);
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-        ctx.lineWidth = 2;
+        // Dotted Reference Lines
+        ctx.setLineDash([10, 10]); ctx.strokeStyle = 'rgba(255,255,255,0.1)';
         [Ax, Gx, Bx].forEach(x => {
-            ctx.beginPath();
-            ctx.moveTo(x, groundY - h*0.3);
-            ctx.lineTo(x, groundY + h*0.25);
-            ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x, groundY - h*0.3); ctx.lineTo(x, groundY + h*0.3); ctx.stroke();
         });
         ctx.setLineDash([]);
 
-        // 2. CHASSIS
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = 'rgba(6, 182, 212, 0.2)';
-        ctx.fillStyle = '#1e293b';
-        ctx.beginPath();
-        ctx.roundRect(Ax - 150, groundY - 240, visualL + 300, 150, 40);
-        ctx.fill();
-        ctx.strokeStyle = '#06b6d4';
-        ctx.lineWidth = 4;
-        ctx.stroke();
-        ctx.shadowBlur = 0;
-
-        // 3. WHEELS
+        // Chassis & Wheels
+        ctx.fillStyle = '#1e293b'; ctx.beginPath();
+        ctx.roundRect(Ax - 150, groundY - 240, visualL + 300, 150, 40); ctx.fill();
+        ctx.strokeStyle = '#06b6d4'; ctx.lineWidth = 4; ctx.stroke();
         [Ax, Bx].forEach(x => {
-            ctx.beginPath();
-            ctx.arc(x, groundY - 50, 60, 0, Math.PI*2);
-            ctx.fillStyle = '#0f172a';
-            ctx.fill();
-            ctx.strokeStyle = '#06b6d4';
-            ctx.lineWidth = 8;
-            ctx.stroke();
-            
-            // Hub cap
-            ctx.beginPath();
-            ctx.arc(x, groundY - 50, 15, 0, Math.PI*2);
-            ctx.fillStyle = '#334155';
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(x, groundY - 50, 60, 0, 7); ctx.fillStyle = '#0f172a'; ctx.fill();
+            ctx.strokeStyle = '#06b6d4'; ctx.lineWidth = 8; ctx.stroke();
         });
 
-        // 4. FORCES (FBD MODE)
+        // TIERED DIMENSIONS (No Overlap Fix)
+        if(viewMode === 'geom') {
+            const t1 = groundY + 140, t2 = groundY + 280;
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 2;
+            [Ax, Gx, Bx].forEach(x => { ctx.beginPath(); ctx.moveTo(x, groundY + 20); ctx.lineTo(x, t2 + 40); ctx.stroke(); });
+            
+            drawDim(Ax, Gx, t1, `df: ${(data.df_m*1000).toFixed(0)}mm`, '#a78bfa');
+            drawDim(Gx, Bx, t1, `dr: ${(data.dr_m*1000).toFixed(0)}mm`, '#a78bfa');
+            drawDim(Ax, Bx, t2, `Wheelbase L: ${data.L.toFixed(3)}m`, '#06b6d4');
+        }
+
         if(viewMode === 'fbd' || viewMode === 'moments') {
             const arrowLen = 220 * progress;
-            // Weight
             drawArrow(Gx, groundY - 120, Gx, groundY - 120 + arrowLen, '#f43f5e', "W", "G");
-            // Reactions
             drawArrow(Ax, groundY, Ax, groundY - arrowLen, '#10b981', "Nf", "A");
             drawArrow(Bx, groundY, Bx, groundY - arrowLen, '#f59e0b', "Nr", "B");
         }
-
-        // 5. DIMENSIONS (GEOMETRY MODE - NEAT & CLEAR TIERED SYSTEM)
-        if(viewMode === 'geom') {
-            const tier1Y = groundY + 120; // Level for df and dr
-            const tier2Y = groundY + 280; // Level for total Wheelbase L
-
-            // Extension Drop-Lines
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-            ctx.lineWidth = 1.5;
-            [Ax, Gx, Bx].forEach(x => {
-                ctx.beginPath();
-                ctx.moveTo(x, groundY + 20);
-                ctx.lineTo(x, tier2Y + 40);
-                ctx.stroke();
-            });
-
-            // df arrow
-            drawDim(Ax, Gx, tier1Y, `df: ${(data.df_m * 1000).toFixed(0)}mm`, '#a78bfa');
-            // dr arrow
-            drawDim(Gx, Bx, tier1Y, `dr: ${(data.dr_m * 1000).toFixed(0)}mm`, '#a78bfa');
-            // total L arrow (Lower Tier)
-            drawDim(Ax, Bx, tier2Y, `Wheelbase L: ${data.L.toFixed(3)}m`, '#06b6d4');
-        }
     }
 
-    function drawArrow(x1, y1, x2, y2, color, label, point) {
-        const head = 25;
-        ctx.strokeStyle = color;
-        ctx.fillStyle = color;
-        ctx.lineWidth = 10;
-        ctx.lineCap = 'round';
-
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
-
-        // Arrowhead
-        const angle = Math.atan2(y2 - y1, x2 - x1);
-        ctx.beginPath();
-        ctx.moveTo(x2, y2);
-        ctx.lineTo(x2 - head * Math.cos(angle - Math.PI / 6), y2 - head * Math.sin(angle - Math.PI / 6));
-        ctx.lineTo(x2 - head * Math.cos(angle + Math.PI / 6), y2 - head * Math.sin(angle + Math.PI / 6));
-        ctx.fill();
-
-        // Labels
-        ctx.font = 'bold 36px Inter';
-        ctx.textAlign = 'left';
-        ctx.fillText(label, x2 + 30, y2 + 10);
-        
-        ctx.font = 'bold 24px JetBrains Mono';
-        ctx.fillStyle = 'white';
-        ctx.fillText(point, x1 - 45, y1 - 10);
+    function drawArrow(x1, y1, x2, y2, color, label, pt) {
+        ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 10;
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+        ctx.font = 'bold 36px Inter'; ctx.fillText(label, x2 + 30, y2 + 10);
+        ctx.font = 'bold 24px JetBrains Mono'; ctx.fillStyle = 'white'; ctx.fillText(pt, x1 - 45, y1 - 10);
     }
 
     function drawDim(x1, x2, y, text, color) {
-        const head = 20;
-        ctx.strokeStyle = color;
-        ctx.fillStyle = color;
-        ctx.lineWidth = 3;
-
-        // Horizontal line
-        ctx.beginPath();
-        ctx.moveTo(x1 + 10, y);
-        ctx.lineTo(x2 - 10, y);
-        ctx.stroke();
-
-        // Side arrows
-        ctx.beginPath();
-        ctx.moveTo(x1 + 30, y - 10); ctx.lineTo(x1, y); ctx.lineTo(x1 + 30, y + 10); ctx.fill();
-        ctx.beginPath(); ctx.moveTo(x2 - 30, y - 10); ctx.lineTo(x2, y); ctx.lineTo(x2 - 30, y + 10); ctx.fill();
-
-        // Label
-        ctx.font = 'bold 28px JetBrains Mono';
-        ctx.textAlign = 'center';
-        ctx.fillText(text, (x1 + x2) / 2, y - 25);
+        ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(x1 + 10, y); ctx.lineTo(x2 - 10, y); ctx.stroke();
+        ctx.font = 'bold 28px JetBrains Mono'; ctx.textAlign = 'center'; ctx.fillText(text, (x1+x2)/2, y - 25);
     }
 
-    // Initialize
     calculate();
 </script>
-
 </body>
 </html>
